@@ -1,30 +1,67 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="app">
+    <MyHeader></MyHeader>
+    <div class="main">
+      <MyNav class="Nav"></MyNav>
+      <div class="right">
+        <div class="bread">
+          <el-breadcrumb :separator-icon="ArrowRight">
+            <el-breadcrumb-item>通知管理</el-breadcrumb-item>
+            <el-breadcrumb-item>消息管理</el-breadcrumb-item>
+          </el-breadcrumb>
+        </div>
+        <div class="view">
+          <router-view></router-view>
+        </div>
+      </div>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script lang="ts" setup>
+import { ArrowRight } from '@element-plus/icons-vue'
+import MyHeader from './components/MyHeader.vue'
+import MyNav from './components/MyNav.vue';
+
+</script>
+
+<style lang="less" scoped>
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+.Nav {
+  flex: 1;
+}
+
+.right {
+  margin-left: 20px;
+  flex: 7;
+  display: flex;
+  flex-direction: column;
+}
+
+.bread {
+  height: 51px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.view {
+  flex: 1;
+  border-radius: 20px 0px 0px 0px;
+  background-color: rgba(255, 255, 255, 1);
+  width: 100%;
 }
 </style>
+
+
