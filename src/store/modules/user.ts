@@ -17,7 +17,22 @@ function hasPermission(roleId: any, route: any) {
     return true
   }
 }
-
+function filterRouter(role:any,routers:any){
+  const adds= routers.filter((v:any)=>{
+    if(hasPermission(role,v)){
+      if(v.children&&v.children.length>0){
+        v.children=filterRouter(role,v.children)
+        return v
+      }else{
+        return v
+      }
+    }else{
+      return false
+    }
+  })
+  console.log(adds)
+  return adds
+}
 export default {
   namespaced: true,
   state(): UserState {
@@ -42,16 +57,16 @@ export default {
     };
   },
   mutations: {
-    setIsStu(state: any, payload: any) {
+    setIsStu(state: UserState, payload: any) {
       state.userDesc.is_stu = payload.isStudent
     },
-    setNumber(state: any, payload: any) {
+    setNumber(state: UserState, payload: any) {
       state.userDesc.number = payload.number
     },
-    setUserDesc(state: any, payload: any) {
+    setUserDesc(state: UserState, payload: any) {
       state.userDesc = payload
     },
-    setRouters(state: any, payload: any) {
+    setRouters(state: UserState, payload: any) {
       state.addRouters = payload.addRouters
       state.routers=payload.routers
     }
@@ -90,30 +105,14 @@ export default {
         context.commit('setUserDesc',result.data)
         return result
       } catch (error: any) {
-        console.log(error);
+        localStorage.removeItem('TOKEN')
         return error.response.data
       }
 
     },
     GenerateRoutes(context:any,role: number) {
-      return new Promise<void>((resolve) => {      
-        const accessedRouters = asyncRouterMap.filter(v => {
-          console.log(hasPermission(role, v));
-          if (hasPermission(role, v)) {
-            if (v.children && v.children.length > 0) {
-              v.children = v.children.filter(child => {
-                if (hasPermission(role, child)) {
-                  return child
-                }
-                return false;
-              });
-              return v
-            } else {
-              return v
-            }
-          }
-          return false;
-        });
+      return new Promise<void>((resolve) => {
+        const accessedRouters = filterRouter(role,asyncRouterMap)
         // @ts-ignore
         const addRouters = accessedRouters;
         // @ts-ignore

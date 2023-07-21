@@ -129,5 +129,6 @@ const Login = async () => {
   text-align: center;
   font-family: Roboto;
   border: 1px solid rgba(56, 148, 255, 1);
+  cursor: pointer;
 }
 </style>

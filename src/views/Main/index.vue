@@ -5,23 +5,21 @@
         <MyNav class="Nav"></MyNav>
         <div class="right">
           <div class="bread">
-            <el-breadcrumb :separator-icon="ArrowRight">
-              <el-breadcrumb-item>通知管理</el-breadcrumb-item>
-              <el-breadcrumb-item>消息管理</el-breadcrumb-item>
-            </el-breadcrumb>
+            <MyBreadcrumb></MyBreadcrumb>
           </div>
           <div class="view">
-            <button>sdaf</button>
+            <router-view/>
           </div>
+          
         </div>
       </div>
     </div>
   </template>
   
   <script lang="ts" setup>
-  import { ArrowRight } from '@element-plus/icons-vue'
   import MyHeader from '@/components/MyHeader.vue'
   import MyNav from '@/components/MyNav.vue';
+  import MyBreadcrumb from '@/components/MyBreadcrumb.vue';
   </script>
   
   <style lang="less" scoped>

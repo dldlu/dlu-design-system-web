@@ -29,6 +29,7 @@ const type = '老师'
 <style lang="less" scoped>
 .header {
   width: 100%;
+  min-width: 1180px;
   height: 72px;
   background-color: rgba(255, 255, 255, 1);
   box-shadow: 0px 3px 6px 0px #D7D6D6;

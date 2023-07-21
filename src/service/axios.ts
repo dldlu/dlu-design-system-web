@@ -20,8 +20,8 @@ const service:AxiosInstance = axios.create({
 });
 service.interceptors.request.use(((config) => {
     nprogress.start();
-    if(store.state.user.token){
-        config.headers.Authorization=store.state.user.token
+    if(localStorage.getItem('TOKEN')){
+        config.headers.Authorization=localStorage.getItem('TOKEN')
     }
     return config;
 }));

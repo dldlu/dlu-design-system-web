@@ -8,7 +8,7 @@ export const constantRouterMap = [
     path: '/login',
     component: () => import('../views/Login/index.vue'),
     meta: { title: '登录' }
-  }
+  },
 ]
 
 export const asyncRouterMap = [
@@ -70,6 +70,15 @@ export const asyncRouterMap = [
         meta: { title: '日志管理', role: 1 },
       },
     ]
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('@/views/404/index.vue')
+  },
+  {
+    path: '/:pathMatch(.*)',
+    redirect:'/404'
   }
 ]
 const router = createRouter({
@@ -79,8 +88,8 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
   const store = useStore()
-  let hasToken = store.state.user.token
-  let hasInfo = store.state.user.userDesc.number !== ''
+  let hasToken = store.state.user.token || localStorage.getItem('TOKEN')
+  let hasInfo = store.state.user.userDesc.name !== ''
   if (hasToken) {
     if (hasInfo) {
       next()
