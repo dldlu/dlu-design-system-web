@@ -2,8 +2,6 @@ import axios from "axios";
 // @ts-ignore
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
-// @ts-ignore
-import store from "@/store";
 import type {AxiosInstance ,AxiosRequestConfig} from "axios";
 
 

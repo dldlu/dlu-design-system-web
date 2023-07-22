@@ -4,14 +4,14 @@
     <div class="font user">
       <el-dropdown>
         <span style="outline: none !important;">
-          你好,<span class="name">{{ userName }}</span>{{ type }}      
+          你好,<span class="name">{{ userName }}</span>{{ type }}
           <el-icon>
             <arrow-down />
           </el-icon>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click="logOut">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -21,9 +21,14 @@
 
 <script lang="ts" setup>
 import { ArrowDown } from '@element-plus/icons-vue'
+import {useRouter} from "vue-router";
+const router=useRouter()
 const userName = '邱少明'
 const type = '老师'
-
+const logOut=()=>{
+  localStorage.removeItem('TOKEN')
+  router.push({name:'login'})
+}
 </script>
 
 <style lang="less" scoped>
@@ -32,7 +37,7 @@ const type = '老师'
   min-width: 1180px;
   height: 72px;
   background-color: rgba(255, 255, 255, 1);
-  box-shadow: 0px 3px 6px 0px #D7D6D6;
+  box-shadow: 0 3px 6px 0 #D7D6D6;
   display: flex;
   justify-content: end;
   align-items: center;
