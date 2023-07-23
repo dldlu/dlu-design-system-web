@@ -7,54 +7,66 @@
           <div class="loginFormItem">
             <div class="label">账号</div>
             <el-form-item>
-              <el-input v-model="form.number" placeholder="请输入账号" class="loginInput"/>
+              <el-input
+                v-model="form.number"
+                placeholder="请输入账号"
+                class="loginInput"
+              />
             </el-form-item>
           </div>
           <div class="loginFormItem">
             <div class="label">密码</div>
             <el-form-item>
-              <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password class="loginInput"/>
+              <el-input
+                v-model="form.password"
+                type="password"
+                placeholder="请输入密码"
+                show-password
+                class="loginInput"
+              />
             </el-form-item>
           </div>
-
         </el-form>
         <div>
           <button class="loginBtn" @click="Login">登录</button>
         </div>
-
       </div>
       <div class="right"></div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive } from 'vue';
-import { useRouter } from 'vue-router';
-import store from '@/store'
-import { ElMessage } from 'element-plus'
+import { reactive } from "vue";
+import { useRouter } from "vue-router";
+import store from "@/store";
+import { ElMessage } from "element-plus";
 
-const router=useRouter()
+const router = useRouter();
 
 let form = reactive({
-  number: '',
-  password: ''
-})
+  number: "",
+  password: "",
+});
 
 const Login = async () => {
-  const {number ,password}=form
-  const res = await store.dispatch('user/userLogin', { number, password })
-  if (res.status_code===10000) {
-    ElMessage.success(res.status_msg)
-    router.push('/system')
+  const { number, password } = form;
+  const res = await store.dispatch("user/userLogin", { number, password });
+  console.log(res);
+  if (res.status_code === 10000) {
+    ElMessage.success(res.status_msg);
+    await router.push("/system");
   } else {
-    ElMessage.error(res.status_msg)
+    ElMessage.error(res.status_msg);
   }
-}
-
+};
 </script>
 <style lang="less" scoped>
 .main {
-  background: linear-gradient(180deg, rgba(56, 148, 255, 0.3) 37%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(56, 148, 255, 0.3) 37%,
+    rgba(255, 255, 255, 0) 100%
+  );
   height: 100%;
   position: relative;
 }
@@ -86,7 +98,6 @@ const Login = async () => {
   flex: 1;
   background-image: url(@/assets/dlu.png);
   background-size: 100% 100%;
-
 }
 
 .title {
@@ -94,7 +105,6 @@ const Login = async () => {
   color: rgba(16, 16, 16, 1);
   font-size: 30px;
   font-family: SourceHanSansSC-regular;
-
 }
 
 .loginForm {
@@ -102,10 +112,10 @@ const Login = async () => {
   height: 150px;
 }
 
-/deep/.el-form-item{
+/deep/.el-form-item {
   margin: 0;
 }
-.label{
+.label {
   width: 70px;
 }
 .loginFormItem {
@@ -113,10 +123,9 @@ const Login = async () => {
   display: flex;
   flex-direction: row;
   align-items: center;
-
 }
 
-.loginInput{
+.loginInput {
   width: 260px;
 }
 .loginBtn {
