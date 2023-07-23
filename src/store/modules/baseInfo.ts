@@ -1,14 +1,27 @@
 import { getRoleList, roleRes } from "@/service/user/userRole.ts";
 import { userDesc } from "@/service/user/userInfo.ts";
+import { getSchools } from "@/service/info/school.ts";
+import { schoolRequest } from "@/service/info/school.ts";
+
+interface infoObj<T> {
+  array: T[];
+  item_total: number;
+  page_total: number;
+}
 interface BaseInfoState {
   colleges: any[];
   majors: any[];
   users: userDesc[];
   managers: any[];
   roles: roleRes[];
-  schools: any[];
+  schools: infoObj<schoolRequest>;
   classes: any[];
   logs: any[];
+}
+
+interface pageBody {
+  size: number;
+  num: number;
 }
 
 export default {
@@ -50,10 +63,138 @@ export default {
           role_id: 7,
           is_delete: 1,
         },
+        {
+          id: 56,
+          number: "21391006",
+          name: "张芸搏",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 1,
+          is_delete: 0,
+        },
+        {
+          id: 56,
+          number: "21391021",
+          name: "梁亮",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 7,
+          is_delete: 1,
+        },
+        {
+          id: 56,
+          number: "21391006",
+          name: "张芸搏",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 1,
+          is_delete: 0,
+        },
+        {
+          id: 56,
+          number: "21391021",
+          name: "梁亮",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 7,
+          is_delete: 1,
+        },
+        {
+          id: 56,
+          number: "21391006",
+          name: "张芸搏",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 1,
+          is_delete: 0,
+        },
+        {
+          id: 56,
+          number: "21391021",
+          name: "梁亮",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 7,
+          is_delete: 1,
+        },
+        {
+          id: 56,
+          number: "21391006",
+          name: "张芸搏",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 1,
+          is_delete: 0,
+        },
+        {
+          id: 56,
+          number: "21391021",
+          name: "梁亮",
+          phone: "18185565868",
+          email: "t.wdnbl@qq.com",
+          college_id: 41,
+          college_name: "万动下张候",
+          major_id: 17,
+          major_name: "称安就生什",
+          class_id: 54,
+          class_name: "软件211",
+          is_stu: 86,
+          role_id: 7,
+          is_delete: 1,
+        },
       ],
       managers: [],
       roles: [],
-      schools: [],
+      schools: {} as infoObj<schoolRequest>,
       classes: [],
       logs: [],
     };
@@ -85,10 +226,19 @@ export default {
     },
   },
   actions: {
-    async getRoleList({ commit }: any) {
+    async getRoles({ commit }: any) {
       try {
         let result = await getRoleList();
         commit("setRoles", { roles: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getSchools({ commit }: any, data: pageBody) {
+      try {
+        let result = await getSchools(data.size, data.num);
+        commit("setSchools", { schools: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;

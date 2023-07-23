@@ -5,7 +5,7 @@
     </div>
     <div class="tableBody">
       <el-table
-        :data="schools"
+        :data="schools.array"
         stripe
         style="margin-top: 20px"
         max-height="500"
@@ -30,7 +30,7 @@
           <template #default="scope">
             <div>
               <el-checkbox
-                v-model="schools[scope.$index].is_delete"
+                v-model="schools.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
                 size="small"
@@ -39,6 +39,14 @@
           </template>
         </el-table-column>
       </el-table>
+    </div>
+    <div class="tableFooter">
+      <el-pagination
+        v-model:current-page="pageParams.num"
+        layout="prev, pager, next"
+        :total="schools.item_total || 1"
+        @current-change="handleCurrentChange"
+      />
     </div>
   </div>
   <el-dialog
@@ -49,7 +57,7 @@
   >
     <div style="display: flex; justify-content: center">
       <el-form
-        ref="addRoleFormRef"
+        ref="addSchFormRef"
         label-position="left"
         label-width="100px"
         :model="addSchForm"
@@ -57,13 +65,13 @@
         style="max-width: 460px"
       >
         <el-form-item label="学校代码" prop="id">
-          <el-input v-model="addSchForm.name" />
+          <el-input v-model.number="addSchForm.id" />
         </el-form-item>
         <el-form-item label="学校名称" prop="name">
           <el-input v-model="addSchForm.name" />
         </el-form-item>
         <el-form-item label="学校地址" prop="address">
-          <el-input v-model="addSchForm.name" />
+          <el-input v-model="addSchForm.address" />
         </el-form-item>
       </el-form>
     </div>
@@ -79,18 +87,32 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onBeforeMount, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+  watch,
+} from "vue";
 import { addRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
+import { postSchool, schoolRequest } from "@/service/info/school.ts";
 
 const store = useStore();
 let addSchVisible = ref<boolean>(false);
 let addSchFormRef = ref<FormInstance>();
-let addSchForm = reactive({
-  id: "",
+let addSchForm = reactive<schoolRequest>({
+  id: null,
   name: "",
   address: "",
+  is_delete: 0,
+});
+let pageParams = reactive({
+  num: 1,
+  size: 10,
 });
 let addSchFormRules = reactive<FormRules>({
   id: [{ required: true, message: "学校代码不能为空", trigger: "blur" }],
@@ -100,18 +122,33 @@ let addSchFormRules = reactive<FormRules>({
 let schools = computed(() => {
   return store.state.baseInfo.schools;
 });
+watch(pageParams, () => {
+  getData();
+});
+const handleCurrentChange = (val: number) => {
+  pageParams.num = val;
+};
 /**
- * @description:发起新增角色请求
+ * @description:获取学校数据
+ * @return {*}
+ */
+const getData = () => {
+  const params = JSON.parse(JSON.stringify(pageParams));
+  console.log(params);
+  store.dispatch("baseInfo/getSchools", params);
+};
+/**
+ * @description:发起新增学校请求
  * @return {*}
  */
 let sendAddSch = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      let res = await addRole(addSchForm);
+      let res = await postSchool(addSchForm);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        await store.dispatch("user/getRoleList");
+        getData();
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -121,7 +158,7 @@ let sendAddSch = async (formEl: FormInstance | undefined) => {
   });
 };
 onMounted(() => {
-  store.dispatch("user/getRoleList");
+  getData();
 });
 </script>
 <style lang="less" scoped></style>

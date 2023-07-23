@@ -96,7 +96,7 @@ let sendAddRole = async (formEl: FormInstance | undefined) => {
       let res = await addRole(addRoleForm);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        await store.dispatch("baseInfo/getRoleList");
+        await store.dispatch("baseInfo/getRoles");
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -106,7 +106,7 @@ let sendAddRole = async (formEl: FormInstance | undefined) => {
   });
 };
 onMounted(() => {
-  store.dispatch("baseInfo/getRoleList");
+  store.dispatch("baseInfo/getRoles");
 });
 </script>
 <style lang="less" scoped></style>
