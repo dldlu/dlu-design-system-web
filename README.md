@@ -1,18 +1,33 @@
-# Vue 3 + TypeScript + Vite
+# Dlu-Design-System-Web
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+### 技术栈：Vue 3 + TypeScript + Vuex + Vite + element-plus
 
-## Recommended IDE Setup
+### 需求文档：https://gz41kqr7fr.feishu.cn/docx/E5ykdelk3oqMJOxg22Ac5uAtnhf
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+密码：maYf
 
-## Type Support For `.vue` Imports in TS
+### 原型图：https://modao.cc/app/B6xRskscru6l9eXWUUmjHb#screen=slhaf2l6b9d0qyf
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+### 任务管理：https://tvyi6983v4s.feishu.cn/base/BDJPbbRCvaofDksmWkNc5SPinif?table=tblFMwJDCZWTk6m1&view=vewXxBNTOK
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+### 你需要会什么？
 
-1. Disable the built-in TypeScript Extension
-   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
+1. 基本的git操作
+2. html，css，js
+3. vue2或vue3均可（会vue3最佳）
+4. ts（可选）
+
+### 你能学到什么？
+
+1. 如果你只会vue2想学习vue3相信通过参加这个项目你能获得良好的vue3实践
+2. 我们会认真cr每一次pr，帮你指出代码中存在的问题，提高你的代码能力
+3. 参与团队开发，提高git的使用能力
+
+### 如何参与？
+
+可以通过qq：997179306联系我
+
+### commit规范
+
+https://github.com/liuchengxu/git-commit-emoji-cn  
+图标在前信息在后
