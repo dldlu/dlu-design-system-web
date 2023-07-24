@@ -28,6 +28,7 @@
                 v-model="roles[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
+                @change="changeIsDelete(roles[scope.$index].id, scope.$index)"
                 size="small"
               />
             </div>
@@ -69,7 +70,7 @@
 <script lang="ts" setup>
 import { useStore } from "vuex";
 import { computed, onMounted, reactive, ref } from "vue";
-import { addRole } from "@/service/user/userRole.ts";
+import { addRole, deleteRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 
@@ -104,6 +105,22 @@ let sendAddRole = async (formEl: FormInstance | undefined) => {
       ElMessage.error("有错误信息");
     }
   });
+};
+/**
+ * @description:修改是否有效
+ * @return {*}
+ * @param roleId 角色代码
+ * @param index 索引
+ */
+let changeIsDelete = async (roleId: string, index: number) => {
+  let res = await deleteRole(roleId);
+  if (res.status_code === 10000) {
+    ElMessage.success(res.status_msg);
+  } else {
+    ElMessage.error(res.status_msg);
+    store.state.baseInfo.roles[index].is_delete =
+      store.state.baseInfo.roles[index].is_delete === 0 ? 1 : 0;
+  }
 };
 onMounted(() => {
   store.dispatch("baseInfo/getRoles");

@@ -17,8 +17,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="id" label="学校代码" min-width="120" />
-        <el-table-column prop="name" label="学校名称" min-width="90" />
+        <el-table-column prop="id" label="学校代码" min-width="100" />
+        <el-table-column prop="name" label="学校名称" min-width="100" />
+        <el-table-column prop="address" label="学校地址" min-width="100" />
         <el-table-column label="学校信息" min-width="150">
           <template #default="scope">
             <div>
@@ -33,6 +34,12 @@
                 v-model="schools.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
+                @change="
+                  changeIsDelete(
+                    <number>schools.array[scope.$index].id,
+                    scope.$index,
+                  )
+                "
                 size="small"
               />
             </div>
@@ -44,7 +51,7 @@
       <el-pagination
         v-model:current-page="pageParams.num"
         layout="prev, pager, next"
-        :total="schools.item_total || 1"
+        :page-count="schools.page_total || 1"
         @current-change="handleCurrentChange"
       />
     </div>
@@ -99,7 +106,7 @@ import {
 import { addRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { postSchool, schoolRequest } from "@/service/info/school.ts";
+import { delSchool, postSchool, schoolRequest } from "@/service/info/school.ts";
 
 const store = useStore();
 let addSchVisible = ref<boolean>(false);
@@ -156,6 +163,22 @@ let sendAddSch = async (formEl: FormInstance | undefined) => {
       ElMessage.error("有错误信息");
     }
   });
+};
+/**
+ * @description:修改是否有效
+ * @return {*}
+ * @param schoolId
+ * @param index 索引
+ */
+let changeIsDelete = async (schoolId: number, index: number) => {
+  let res = await delSchool(schoolId);
+  if (res.status_code === 10000) {
+    ElMessage.success(res.status_msg);
+  } else {
+    ElMessage.error(res.status_msg);
+    store.state.baseInfo.schools.array[index].is_delete =
+      store.state.baseInfo.schools.array[index].is_delete === 0 ? 1 : 0;
+  }
 };
 onMounted(() => {
   getData();

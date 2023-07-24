@@ -2,6 +2,7 @@ import { getRoleList, roleRes } from "@/service/user/userRole.ts";
 import { userDesc } from "@/service/user/userInfo.ts";
 import { getSchools } from "@/service/info/school.ts";
 import { schoolRequest } from "@/service/info/school.ts";
+import { getColleges, collegeRequest } from "@/service/info/college.ts";
 
 interface infoObj<T> {
   array: T[];
@@ -9,7 +10,7 @@ interface infoObj<T> {
   page_total: number;
 }
 interface BaseInfoState {
-  colleges: any[];
+  colleges: infoObj<collegeRequest>;
   majors: any[];
   users: userDesc[];
   managers: any[];
@@ -28,7 +29,7 @@ export default {
   namespaced: true,
   state(): BaseInfoState {
     return {
-      colleges: [],
+      colleges: {} as infoObj<collegeRequest>,
       majors: [],
       users: [
         {
@@ -239,6 +240,15 @@ export default {
       try {
         let result = await getSchools(data.size, data.num);
         commit("setSchools", { schools: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getColleges({ commit }: any, data: pageBody) {
+      try {
+        let result = await getColleges(data.size, data.num);
+        commit("setColleges", { colleges: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;

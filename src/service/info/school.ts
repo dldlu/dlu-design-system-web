@@ -14,7 +14,7 @@ export const getSchools = (size: number, num: number) =>
 export const postSchool = (data: schoolRequest) =>
   requests.post(`/info/school`, data);
 
-export const delSchool = (id: string) => requests.delete(`/info/school/${id}`);
+export const delSchool = (id: number) => requests.delete(`/info/school/${id}`);
 
 export const putSchool = (data: schoolRequest) =>
   requests.put(`/info/school`, data);
