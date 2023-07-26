@@ -65,9 +65,10 @@
   </div>
   <el-dialog
     v-model="addColVisible"
-    title="添加学校"
+    title="添加学院"
     width="35%"
     style="border-radius: 15px"
+    @close="closeDialog"
   >
     <div style="display: flex; justify-content: center">
       <el-form
@@ -104,6 +105,7 @@ import {
   onMounted,
   reactive,
   ref,
+  toRaw,
   toRefs,
   watch,
 } from "vue";
@@ -119,7 +121,7 @@ const store = useStore();
 let schoolId = ref<number>(27);
 let addColVisible = ref<boolean>(false);
 let addColFormRef = ref<FormInstance>();
-let addColForm = reactive<collegeRequest>({
+let addColForm = reactive({
   id: null,
   name: "",
   is_delete: 0,
@@ -160,7 +162,9 @@ let sendAddCol = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      let res = await postCollege(addColForm);
+      const form = toRaw(addColForm);
+      let res = await postCollege(form as collegeRequest);
+      console.log(res);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         getData();
@@ -187,6 +191,10 @@ let changeIsDelete = async (collegeId: number, index: number) => {
     store.state.baseInfo.colleges.array[index].is_delete =
       store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
   }
+};
+let closeDialog = () => {
+  addColForm.id = null;
+  addColForm.name = "";
 };
 onMounted(() => {
   store.dispatch("baseInfo/getSchools", { size: 0, num: 0 });

@@ -1,9 +1,9 @@
 import { requests } from "@/service/axios";
 
 export interface collegeRequest {
-  id: number | null;
+  id: number;
   name: string;
-  is_delete: number;
+  is_delete?: number;
 }
 
 //college

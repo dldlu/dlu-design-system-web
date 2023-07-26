@@ -42,6 +42,7 @@
     title="添加角色"
     width="35%"
     style="border-radius: 15px"
+    @close="closeDialog"
   >
     <div style="display: flex; justify-content: center">
       <el-form
@@ -69,7 +70,7 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref, toRaw } from "vue";
 import { addRole, deleteRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
@@ -94,7 +95,8 @@ let sendAddRole = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      let res = await addRole(addRoleForm);
+      const form = toRaw(addRoleForm);
+      let res = await addRole(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         await store.dispatch("baseInfo/getRoles");
@@ -121,6 +123,9 @@ let changeIsDelete = async (roleId: string, index: number) => {
     store.state.baseInfo.roles[index].is_delete =
       store.state.baseInfo.roles[index].is_delete === 0 ? 1 : 0;
   }
+};
+let closeDialog = () => {
+  addRoleForm.name = "";
 };
 onMounted(() => {
   store.dispatch("baseInfo/getRoles");

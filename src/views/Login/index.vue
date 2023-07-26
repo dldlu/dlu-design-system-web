@@ -112,7 +112,7 @@ const Login = async () => {
   height: 150px;
 }
 
-/deep/.el-form-item {
+:deep(.el-form-item) {
   margin: 0;
 }
 .label {

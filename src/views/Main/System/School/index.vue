@@ -61,6 +61,7 @@
     title="添加学校"
     width="35%"
     style="border-radius: 15px"
+    @close="closeDialog"
   >
     <div style="display: flex; justify-content: center">
       <el-form
@@ -100,6 +101,7 @@ import {
   onMounted,
   reactive,
   ref,
+  toRaw,
   toRefs,
   watch,
 } from "vue";
@@ -111,7 +113,7 @@ import { delSchool, postSchool, schoolRequest } from "@/service/info/school.ts";
 const store = useStore();
 let addSchVisible = ref<boolean>(false);
 let addSchFormRef = ref<FormInstance>();
-let addSchForm = reactive<schoolRequest>({
+let addSchForm = reactive({
   id: null,
   name: "",
   address: "",
@@ -141,7 +143,6 @@ const handleCurrentChange = (val: number) => {
  */
 const getData = () => {
   const params = JSON.parse(JSON.stringify(pageParams));
-  console.log(params);
   store.dispatch("baseInfo/getSchools", params);
 };
 /**
@@ -152,7 +153,8 @@ let sendAddSch = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      let res = await postSchool(addSchForm);
+      const form = toRaw(addSchForm);
+      let res = await postSchool(form as schoolRequest);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         getData();
@@ -179,6 +181,10 @@ let changeIsDelete = async (schoolId: number, index: number) => {
     store.state.baseInfo.schools.array[index].is_delete =
       store.state.baseInfo.schools.array[index].is_delete === 0 ? 1 : 0;
   }
+};
+let closeDialog = () => {
+  addSchForm.id = null;
+  addSchForm.name = "";
 };
 onMounted(() => {
   getData();

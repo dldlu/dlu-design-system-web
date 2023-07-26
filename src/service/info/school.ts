@@ -1,7 +1,7 @@
 import { requests } from "@/service/axios";
 
 export interface schoolRequest {
-  id: number | null;
+  id: number;
   name: string;
   address: string;
   is_delete: number;
