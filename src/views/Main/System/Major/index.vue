@@ -1,10 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-select
-        v-model="addMajForm.college_id"
-        style="width: 140px; margin-right: 10px"
-      >
+      <el-select v-model="addMajForm.college_id" style="width: 140px; margin-right: 10px">
         <el-option
           v-for="item in colleges.array"
           :key="item.id"
@@ -15,12 +12,7 @@
       <el-button @click="addMajVisible = true">添加专业</el-button>
     </div>
     <div class="tableBody">
-      <el-table
-        :data="majors.array"
-        stripe
-        style="margin-top: 20px"
-        max-height="500"
-      >
+      <el-table :data="majors.array" stripe style="margin-top: 20px" max-height="500">
         <el-table-column prop="id" label="序号" min-width="90">
           <template #default="scope">
             <div>
@@ -44,12 +36,7 @@
                 v-model="majors.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
-                @change="
-                  changeIsDelete(
-                    <number>majors.array[scope.$index].id,
-                    scope.$index,
-                  )
-                "
+                @change="changeIsDelete(<number>majors.array[scope.$index].id, scope.$index)"
                 size="small"
               />
             </div>
@@ -93,25 +80,14 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="addMajVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAddMaj(addMajFormRef)">
-          确定
-        </el-button>
+        <el-button type="primary" @click="sendAddMaj(addMajFormRef)"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import {
-  computed,
-  onBeforeMount,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
@@ -123,7 +99,6 @@ let addMajForm = reactive({
   id: null,
   name: "",
   college_id: 21,
-  is_delete: 0,
 });
 let pageParams = reactive({
   num: 1,

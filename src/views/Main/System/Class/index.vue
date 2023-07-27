@@ -1,9 +1,232 @@
 <template>
-    <div></div>
-  </template>
-  <script lang="ts" setup>
-  
-  </script>
-  <style lang="less" scoped>
-  
-  </style>
+  <div class="table">
+    <div class="tableHeader">
+      <el-select v-model="addClaForm.grade" style="width: 140px; margin-right: 10px">
+        <el-option
+          v-for="item in grades"
+          :key="item.value"
+          :label="item.value"
+          :value="item.value"
+        />
+      </el-select>
+      <el-select v-model="college_id" style="width: 140px; margin-right: 10px">
+        <el-option
+          v-for="item in colleges.array"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
+      <el-select v-model="addClaForm.major_id" style="width: 140px; margin-right: 10px">
+        <el-option
+          v-for="item in majors.array"
+          :key="item.id"
+          :label="item.name"
+          :value="item.id"
+        />
+      </el-select>
+      <el-button @click="addClaVisible = true">添加班级</el-button>
+    </div>
+    <div class="tableBody">
+      <el-table :data="classes.array" stripe style="margin-top: 20px" max-height="500">
+        <el-table-column prop="id" label="序号" min-width="90">
+          <template #default="scope">
+            <div>
+              {{ scope.$index + 1 }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" label="班级代码" min-width="100" />
+        <el-table-column prop="name" label="班级名称" min-width="150" />
+        <el-table-column label="班级信息" min-width="150">
+          <template #default="scope">
+            <div>
+              <el-button type="warning" size="small">修改信息</el-button>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="有效" min-width="100">
+          <template #default="scope">
+            <div>
+              <el-checkbox
+                v-model="majors.array[scope.$index].is_delete"
+                :true-label="0"
+                :false-label="1"
+                @change="changeIsDelete(<number>majors.array[scope.$index].id, scope.$index)"
+                size="small"
+              />
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="tableFooter">
+      <el-pagination
+        v-model:current-page="pageParams.num"
+        layout="prev, pager, next"
+        :page-count="majors.page_total || 1"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+  </div>
+  <el-dialog
+    v-model="addClaVisible"
+    title="添加班级"
+    width="35%"
+    style="border-radius: 15px"
+    @close="closeDialog"
+  >
+    <div style="display: flex; justify-content: center">
+      <el-form
+        ref="addClaFormRef"
+        label-position="left"
+        label-width="100px"
+        :model="addClaForm"
+        :rules="addClaFormRules"
+        style="max-width: 460px"
+      >
+        <el-form-item label="班级代码" prop="id">
+          <el-input v-model.number="addClaForm.id" />
+        </el-form-item>
+        <el-form-item label="班级名称" prop="name">
+          <el-input v-model="addClaForm.name" />
+        </el-form-item>
+      </el-form>
+    </div>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="addClaVisible = false">取消</el-button>
+        <el-button type="primary" @click="sendAddCla(addClaFormRef)"> 确定 </el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
+<script lang="ts" setup>
+import { useStore } from "vuex";
+import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
+import { ElMessage } from "element-plus";
+import type { FormInstance, FormRules } from "element-plus";
+import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
+import { classRequest, delClass, postClass } from "@/service/info/class.ts";
+
+const store = useStore();
+let college_id = ref<number>(42);
+let addClaVisible = ref<boolean>(false);
+let addClaFormRef = ref<FormInstance>();
+let addClaForm = reactive({
+  id: null,
+  name: "",
+  major_id: 4208,
+  grade: 2023,
+});
+let pageParams = reactive({
+  num: 1,
+  size: 10,
+});
+let addClaFormRules = reactive<FormRules>({
+  id: [{ required: true, message: "班级代码不能为空", trigger: "blur" }],
+  name: [{ required: true, message: "班级名称不能为空", trigger: "blur" }],
+});
+const grades = reactive([]);
+let majors = computed(() => {
+  return store.state.baseInfo.majors;
+});
+let colleges = computed(() => {
+  return store.state.baseInfo.colleges;
+});
+let classes = computed(() => {
+  return store.state.baseInfo.classes;
+});
+watch(pageParams, () => {
+  getData();
+});
+watch(college_id, async () => {
+  await store.dispatch("baseInfo/getMajorsByCollege", {
+    size: 0,
+    num: 0,
+    collegeId: college_id.value,
+  });
+  addClaForm.major_id = store.state.baseInfo.majors.array[0].id;
+});
+watch([() => addClaForm.major_id, () => addClaForm.grade], () => {
+  pageParams.num = 1;
+  pageParams.size = 10;
+  getData();
+});
+const handleCurrentChange = (val: number) => {
+  pageParams.num = val;
+};
+/**
+ * @description:获取学院数据
+ * @return {*}
+ */
+const getData = () => {
+  const params = JSON.parse(JSON.stringify(pageParams));
+  params.majorId = addClaForm.major_id;
+  params.grade = addClaForm.grade;
+  store.dispatch("baseInfo/getClasses", params);
+};
+/**
+ * @description:发起新增学院请求
+ * @return {*}
+ */
+let sendAddCla = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate(async (valid, fields) => {
+    if (valid) {
+      const form = toRaw(addClaForm);
+      console.log(form);
+      let res = await postClass(form as classRequest);
+      if (res.status_code === 10000) {
+        ElMessage.success(res.status_msg);
+        getData();
+      } else {
+        ElMessage.error(res.status_msg);
+      }
+    } else {
+      ElMessage.error("有错误信息");
+    }
+  });
+};
+/**
+ * @description:修改是否有效
+ * @return {*}
+ * @param classId 班级id
+ * @param index 索引
+ */
+let changeIsDelete = async (classId: number, index: number) => {
+  let res = await delClass(classId);
+  if (res.status_code === 10000) {
+    ElMessage.success(res.status_msg);
+  } else {
+    ElMessage.error(res.status_msg);
+    store.state.baseInfo.colleges.array[index].is_delete =
+      store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
+  }
+};
+let closeDialog = () => {
+  addClaForm.id = null;
+  addClaForm.name = "";
+};
+/**
+ * @description:获取年份
+ * @return {*}
+ */
+let getGrades = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  addClaForm.grade = year;
+  for (let i = 0; i < 5; i++) {
+    grades.push({
+      value: year - i,
+    });
+  }
+};
+onMounted(() => {
+  getGrades();
+  store.dispatch("baseInfo/getColleges", { size: 0, num: 0 });
+  store.dispatch("baseInfo/getMajorsByCollege", { size: 0, num: 0, collegeId: college_id.value });
+  getData();
+});
+</script>
+<style lang="less" scoped></style>

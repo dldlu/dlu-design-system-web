@@ -3,11 +3,8 @@ import { userDesc } from "@/service/user/userInfo.ts";
 import { getSchools } from "@/service/info/school.ts";
 import { schoolRequest } from "@/service/info/school.ts";
 import { getColleges, collegeRequest } from "@/service/info/college.ts";
-import {
-  getMajors,
-  getMajorsCollege,
-  majorRequest,
-} from "@/service/info/major.ts";
+import { getMajors, getMajorsCollege, majorRequest } from "@/service/info/major.ts";
+import { classRequest, getClasses } from "@/service/info/class.ts";
 
 interface infoObj<T> {
   array: T[];
@@ -21,7 +18,7 @@ interface BaseInfoState {
   managers: any[];
   roles: roleRes[];
   schools: infoObj<schoolRequest>;
-  classes: any[];
+  classes: infoObj<classRequest>;
   logs: any[];
 }
 
@@ -201,7 +198,7 @@ export default {
       managers: [],
       roles: [],
       schools: {} as infoObj<schoolRequest>,
-      classes: [],
+      classes: {} as infoObj<classRequest>,
       logs: [],
     };
   },
@@ -268,17 +265,19 @@ export default {
         return error.response.data;
       }
     },
-    async getMajorsByCollege(
-      { commit }: any,
-      data: pageBody & { collegeId: number },
-    ) {
+    async getMajorsByCollege({ commit }: any, data: pageBody & { collegeId: number }) {
       try {
-        let result = await getMajorsCollege(
-          data.collegeId,
-          data.size,
-          data.num,
-        );
+        let result = await getMajorsCollege(data.collegeId, data.size, data.num);
         commit("setMajor", { majors: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getClasses({ commit }: any, data: pageBody & { majorId: number; grade: number }) {
+      try {
+        let result = await getClasses(data.majorId, data.grade, data.size, data.num);
+        commit("setClasses", { classes: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;

@@ -89,17 +89,14 @@ const router = createRouter({
 router.beforeEach(async (to, _, next) => {
   const store = useStore();
   let hasToken = store.state.user.token || localStorage.getItem("TOKEN");
-  let hasInfo = store.state.user.userDesc.name !== "";
+  let hasInfo = store.getters.hasInfo;
   if (hasToken) {
     if (hasInfo) {
       next();
     } else {
       let result = await store.dispatch("user/getUserDesc");
       if (result.status_code === 10000) {
-        await store.dispatch(
-          "user/GenerateRoutes",
-          store.state.user.userDesc.role_id,
-        );
+        await store.dispatch("user/GenerateRoutes", store.state.user.userDesc.role_id);
         store.state.user.addRouters.forEach((x: any) => {
           router.addRoute(x);
         }); // 动态添加可访问路由表

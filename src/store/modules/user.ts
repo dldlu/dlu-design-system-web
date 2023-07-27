@@ -1,11 +1,6 @@
 import { asyncRouterMap, constantRouterMap } from "@/router";
-import {
-  checkRole,
-  LoginBody,
-  stuLogin,
-  tchLogin,
-} from "@/service/user/login.ts";
-import { queryUserbyNumber, userDesc } from "@/service/user/userInfo.ts";
+import { checkRole, LoginBody, stuLogin, tchLogin } from "@/service/user/login.ts";
+import { queryUserByNumber, userDesc } from "@/service/user/userInfo.ts";
 
 interface UserState {
   token: string | null;
@@ -107,10 +102,7 @@ export default {
       const number = localStorage.getItem("Number");
       const is_stu = localStorage.getItem("IsStu");
       try {
-        let result = await queryUserbyNumber(
-          number as string,
-          is_stu as string,
-        );
+        let result = await queryUserByNumber(number as string, is_stu as string);
         commit("setUserDesc", result.data);
         return result;
       } catch (error: any) {
