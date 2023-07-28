@@ -89,7 +89,7 @@ const router = createRouter({
 router.beforeEach(async (to, _, next) => {
   const store = useStore();
   let hasToken = store.state.user.token || localStorage.getItem("TOKEN");
-  let hasInfo = store.getters.hasInfo;
+  let hasInfo = Object.keys(store.state.user.userDesc).length !== 0;
   if (hasToken) {
     if (hasInfo) {
       next();

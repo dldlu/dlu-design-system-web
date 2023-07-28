@@ -37,22 +37,7 @@ export default {
   state(): UserState {
     return {
       token: localStorage.getItem("TOKEN"),
-      userDesc: {
-        id: 0,
-        number: "",
-        name: "",
-        phone: "",
-        email: "",
-        college_id: 0,
-        college_name: "",
-        major_id: 0,
-        major_name: "",
-        class_id: 0,
-        class_name: "",
-        is_stu: 0,
-        role_id: 0,
-        is_delete: 0,
-      },
+      userDesc: {} as userDesc,
       routers: constantRouterMap,
       addRouters: [],
     };
@@ -101,14 +86,13 @@ export default {
     async getUserDesc({ commit }: any) {
       const number = localStorage.getItem("Number");
       const is_stu = localStorage.getItem("IsStu");
-      try {
-        let result = await queryUserByNumber(number as string, is_stu as string);
+      let result = await queryUserByNumber(number as string, is_stu as string);
+      if (result.status_code === 10000) {
         commit("setUserDesc", result.data);
-        return result;
-      } catch (error: any) {
+      } else {
         localStorage.removeItem("TOKEN");
-        return error.response.data;
       }
+      return result;
     },
     GenerateRoutes({ commit }: any, role: number) {
       return new Promise<void>((resolve) => {

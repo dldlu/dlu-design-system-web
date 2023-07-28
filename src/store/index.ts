@@ -8,9 +8,4 @@ export default createStore({
     user,
     baseInfo,
   },
-  getters: {
-    hasInfo(state: any) {
-      return state.user.userDesc.name !== "";
-    },
-  },
 });
