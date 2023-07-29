@@ -1,4 +1,5 @@
 import { requests } from "@/service/axios";
+import { pageData } from "@/service/type.ts";
 
 export interface majorRequest {
   id: number;
@@ -9,20 +10,15 @@ export interface majorRequest {
 
 //major
 export const getMajors = (size: number, num: number) =>
-  requests.get(`/info/majors/${size}/${num}`);
+  requests.get<pageData<majorRequest>>(`/info/majors/${size}/${num}`);
 
-export const postMajor = (data: majorRequest) =>
-  requests.post(`/info/major`, data);
+export const postMajor = (data: majorRequest) => requests.post<null>(`/info/major`, data);
 
-export const delMajor = (id: number) => requests.delete(`/info/major/${id}`);
+export const delMajor = (id: number) => requests.delete<null>(`/info/major/${id}`);
 
-export const putMajor = (data: majorRequest) =>
-  requests.put(`/info/major`, data);
+export const putMajor = (data: majorRequest) => requests.put<null>(`/info/major`, data);
 
-export const getMajor = (id: number) => requests.get(`/info/major/${id}`);
+export const getMajor = (id: number) => requests.get<majorRequest>(`/info/major/${id}`);
 
-export const getMajorsCollege = (
-  collegeId: number,
-  size: number,
-  num: number,
-) => requests.get(`/info/majors/college/${collegeId}/${size}/${num}`);
+export const getMajorsCollege = (collegeId: number, size: number, num: number) =>
+  requests.get<pageData<majorRequest>>(`/info/majors/college/${collegeId}/${size}/${num}`);

@@ -9,22 +9,12 @@
           :value="item.value"
         />
       </el-select>
-      <el-select v-model="college_id" style="width: 140px; margin-right: 10px">
-        <el-option
-          v-for="item in colleges.array"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
-      <el-select v-model="addClaForm.major_id" style="width: 140px; margin-right: 10px">
-        <el-option
-          v-for="item in majors.array"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
+      <college-select v-model:college_id="college_id" style="width: 140px; margin-right: 10px" />
+      <major-select
+        v-model:major_id="addClaForm.major_id"
+        :college_id="college_id"
+        style="width: 140px; margin-right: 10px"
+      />
       <el-button @click="addClaVisible = true">添加班级</el-button>
     </div>
     <div class="tableBody">
@@ -49,10 +39,10 @@
           <template #default="scope">
             <div>
               <el-checkbox
-                v-model="majors.array[scope.$index].is_delete"
+                v-model="classes.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
-                @change="changeIsDelete(<number>majors.array[scope.$index].id, scope.$index)"
+                @change="changeIsDelete(<number>classes.array[scope.$index].id, scope.$index)"
                 size="small"
               />
             </div>
@@ -64,7 +54,7 @@
       <el-pagination
         v-model:current-page="pageParams.num"
         layout="prev, pager, next"
-        :page-count="majors.page_total || 1"
+        :page-count="classes.page_total || 1"
         @current-change="handleCurrentChange"
       />
     </div>
@@ -108,6 +98,8 @@ import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
 import { classRequest, delClass, postClass } from "@/service/info/class.ts";
+import CollegeSelect from "@/components/collegeSelect.vue";
+import MajorSelect from "@/components/majorSelect.vue";
 
 const store = useStore();
 let college_id = ref<number>(42);
@@ -128,25 +120,11 @@ let addClaFormRules = reactive<FormRules>({
   name: [{ required: true, message: "班级名称不能为空", trigger: "blur" }],
 });
 const grades = reactive([]);
-let majors = computed(() => {
-  return store.state.baseInfo.majors;
-});
-let colleges = computed(() => {
-  return store.state.baseInfo.colleges;
-});
 let classes = computed(() => {
   return store.state.baseInfo.classes;
 });
 watch(pageParams, () => {
   getData();
-});
-watch(college_id, async () => {
-  await store.dispatch("baseInfo/getMajorsByCollege", {
-    size: 0,
-    num: 0,
-    collegeId: college_id.value,
-  });
-  addClaForm.major_id = store.state.baseInfo.majors.array[0].id;
 });
 watch([() => addClaForm.major_id, () => addClaForm.grade], () => {
   pageParams.num = 1;
@@ -157,7 +135,7 @@ const handleCurrentChange = (val: number) => {
   pageParams.num = val;
 };
 /**
- * @description:获取学院数据
+ * @description:获取班级数据
  * @return {*}
  */
 const getData = () => {
@@ -167,7 +145,7 @@ const getData = () => {
   store.dispatch("baseInfo/getClasses", params);
 };
 /**
- * @description:发起新增学院请求
+ * @description:发起新增班级请求
  * @return {*}
  */
 let sendAddCla = async (formEl: FormInstance | undefined) => {
@@ -175,7 +153,6 @@ let sendAddCla = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       const form = toRaw(addClaForm);
-      console.log(form);
       let res = await postClass(form as classRequest);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
@@ -224,8 +201,6 @@ let getGrades = () => {
 };
 onMounted(() => {
   getGrades();
-  store.dispatch("baseInfo/getColleges", { size: 0, num: 0 });
-  store.dispatch("baseInfo/getMajorsByCollege", { size: 0, num: 0, collegeId: college_id.value });
   getData();
 });
 </script>

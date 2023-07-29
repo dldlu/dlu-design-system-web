@@ -10,8 +10,8 @@ export interface userDesc {
   college_name: string;
   major_id: number;
   major_name: string;
-  class_id: number;
-  class_name: string;
+  class_id?: number;
+  class_name?: string;
   is_stu: number;
   role_id: number;
   title_id?: number;

@@ -1,20 +1,24 @@
 import { requests } from "@/service/axios";
+import { pageData } from "@/service/type.ts";
+import { userDesc } from "@/service/user/userInfo.ts";
 
 //用户管理（7）
 export interface userBody {
-  id: number;
-  number: string;
-  name: string;
-  phone: string;
+  class_id?: number | null;
+  college_id: number;
+  degree_id?: number | null;
   email: string;
   gender: number;
-  collegeId: number;
-  majorId: number;
-  classId: number;
-  titleId: number;
-  degreeId: number;
-  officeId: number;
-  isStu: number;
+  is_stu: number;
+  major_id: number;
+  name: string;
+  number: string;
+  office_id?: number | null;
+  phone: string;
+  title_id?: number | null;
 }
 
 export const addUser = (body: userBody) => requests.post<null>("/user/manage", body);
+
+export const getManagersByRole = (roleId: number, size: number, num: number) =>
+  requests.get<pageData<userDesc>>(`/user/manager/${roleId}/${size}/${num}`);

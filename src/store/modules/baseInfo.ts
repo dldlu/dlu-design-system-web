@@ -5,21 +5,19 @@ import { schoolRequest } from "@/service/info/school.ts";
 import { getColleges, collegeRequest } from "@/service/info/college.ts";
 import { getMajors, getMajorsCollege, majorRequest } from "@/service/info/major.ts";
 import { classRequest, getClasses } from "@/service/info/class.ts";
+import { pageData } from "@/service/type.ts";
+import { getLog, log } from "@/service/log/log.ts";
+import { getManagersByRole } from "@/service/user/userManage.ts";
 
-interface infoObj<T> {
-  array: T[];
-  item_total: number;
-  page_total: number;
-}
 interface BaseInfoState {
-  colleges: infoObj<collegeRequest>;
-  majors: infoObj<majorRequest>;
+  colleges: pageData<collegeRequest>;
+  majors: pageData<majorRequest>;
   users: userDesc[];
-  managers: any[];
+  managers: userDesc[];
   roles: roleRes[];
-  schools: infoObj<schoolRequest>;
-  classes: infoObj<classRequest>;
-  logs: any[];
+  schools: pageData<schoolRequest>;
+  classes: pageData<classRequest>;
+  logs: pageData<log>;
 }
 
 interface pageBody {
@@ -31,8 +29,8 @@ export default {
   namespaced: true,
   state(): BaseInfoState {
     return {
-      colleges: {} as infoObj<collegeRequest>,
-      majors: {} as infoObj<majorRequest>,
+      colleges: {} as pageData<collegeRequest>,
+      majors: {} as pageData<majorRequest>,
       users: [
         {
           id: 56,
@@ -197,9 +195,9 @@ export default {
       ],
       managers: [],
       roles: [],
-      schools: {} as infoObj<schoolRequest>,
-      classes: {} as infoObj<classRequest>,
-      logs: [],
+      schools: {} as pageData<schoolRequest>,
+      classes: {} as pageData<classRequest>,
+      logs: {} as pageData<log>,
     };
   },
   mutations: {
@@ -278,6 +276,24 @@ export default {
       try {
         let result = await getClasses(data.majorId, data.grade, data.size, data.num);
         commit("setClasses", { classes: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getLogs({ commit }: any, data: pageBody) {
+      try {
+        let result = await getLog(data.size, data.num);
+        commit("setLogs", { logs: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getManagers({ commit }: any, data: pageBody & { roleId: number }) {
+      try {
+        let result = await getManagersByRole(data.roleId, data.size, data.num);
+        commit("setManager", { managers: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;

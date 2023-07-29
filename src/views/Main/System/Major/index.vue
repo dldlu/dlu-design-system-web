@@ -1,14 +1,10 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-select v-model="addMajForm.college_id" style="width: 140px; margin-right: 10px">
-        <el-option
-          v-for="item in colleges.array"
-          :key="item.id"
-          :label="item.name"
-          :value="item.id"
-        />
-      </el-select>
+      <college-select
+        v-model:college_id="addMajForm.college_id"
+        style="width: 140px; margin-right: 10px"
+      />
       <el-button @click="addMajVisible = true">添加专业</el-button>
     </div>
     <div class="tableBody">
@@ -91,6 +87,7 @@ import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
+import CollegeSelect from "@/components/collegeSelect.vue";
 
 const store = useStore();
 let addMajVisible = ref<boolean>(false);
@@ -111,9 +108,6 @@ let addMajFormRules = reactive<FormRules>({
 let majors = computed(() => {
   return store.state.baseInfo.majors;
 });
-let colleges = computed(() => {
-  return store.state.baseInfo.colleges;
-});
 watch(pageParams, () => {
   getData();
 });
@@ -129,7 +123,7 @@ const handleCurrentChange = (val: number) => {
   pageParams.num = val;
 };
 /**
- * @description:获取学院数据
+ * @description:获取专业数据
  * @return {*}
  */
 const getData = () => {
@@ -138,7 +132,7 @@ const getData = () => {
   store.dispatch("baseInfo/getMajorsByCollege", params);
 };
 /**
- * @description:发起新增学院请求
+ * @description:发起新增专业请求
  * @return {*}
  */
 let sendAddMaj = async (formEl: FormInstance | undefined) => {
@@ -179,7 +173,6 @@ let closeDialog = () => {
   addMajForm.name = "";
 };
 onMounted(() => {
-  store.dispatch("baseInfo/getColleges", { size: 0, num: 0 });
   getData();
 });
 </script>

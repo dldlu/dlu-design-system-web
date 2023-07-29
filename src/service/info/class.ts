@@ -1,4 +1,5 @@
 import { requests } from "@/service/axios";
+import { pageData } from "@/service/type.ts";
 
 export interface classRequest {
   id: number;
@@ -10,12 +11,12 @@ export interface classRequest {
 
 //class
 export const getClasses = (majorId: number, grade: number, size: number, num: number) =>
-  requests.get(`/info/classes/${majorId}/${grade}/${size}/${num}`);
+  requests.get<pageData<classRequest>>(`/info/classes/${majorId}/${grade}/${size}/${num}`);
 
-export const postClass = (data: classRequest) => requests.post(`/info/class`, data);
+export const postClass = (data: classRequest) => requests.post<null>(`/info/class`, data);
 
-export const delClass = (id: number) => requests.delete(`/info/class/${id}`);
+export const delClass = (id: number) => requests.delete<null>(`/info/class/${id}`);
 
-export const putClass = (data: classRequest) => requests.put(`/info/class`, data);
+export const putClass = (data: classRequest) => requests.put<null>(`/info/class`, data);
 
-export const getClass = (id: number) => requests.get(`/info/class/${id}`);
+export const getClass = (id: number) => requests.get<classRequest>(`/info/class/${id}`);

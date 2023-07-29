@@ -1,4 +1,5 @@
 import { requests } from "@/service/axios";
+import { pageData } from "@/service/type.ts";
 
 export interface collegeRequest {
   id: number;
@@ -8,15 +9,12 @@ export interface collegeRequest {
 
 //college
 export const getColleges = (size: number, num: number) =>
-  requests.get(`/info/colleges/${size}/${num}`);
+  requests.get<pageData<collegeRequest>>(`/info/colleges/${size}/${num}`);
 
-export const postCollege = (data: collegeRequest) =>
-  requests.post(`/info/college`, data);
+export const postCollege = (data: collegeRequest) => requests.post<null>(`/info/college`, data);
 
-export const delCollege = (id: number) =>
-  requests.delete(`/info/college/${id}`);
+export const delCollege = (id: number) => requests.delete<null>(`/info/college/${id}`);
 
-export const putCollege = (data: collegeRequest) =>
-  requests.put(`/info/college`, data);
+export const putCollege = (data: collegeRequest) => requests.put<null>(`/info/college`, data);
 
-export const getCollege = (id: string) => requests.get(`/info/college/${id}`);
+export const getCollege = (id: string) => requests.get<collegeRequest>(`/info/college/${id}`);

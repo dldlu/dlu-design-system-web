@@ -4,12 +4,7 @@
       <el-button @click="addSchVisible = true">添加学校</el-button>
     </div>
     <div class="tableBody">
-      <el-table
-        :data="schools.array"
-        stripe
-        style="margin-top: 20px"
-        max-height="500"
-      >
+      <el-table :data="schools.array" stripe style="margin-top: 20px" max-height="500">
         <el-table-column prop="id" label="序号" min-width="90">
           <template #default="scope">
             <div>
@@ -34,12 +29,7 @@
                 v-model="schools.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
-                @change="
-                  changeIsDelete(
-                    <number>schools.array[scope.$index].id,
-                    scope.$index,
-                  )
-                "
+                @change="changeIsDelete(<number>schools.array[scope.$index].id, scope.$index)"
                 size="small"
               />
             </div>
@@ -86,25 +76,14 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="addSchVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAddSch(addSchFormRef)">
-          确定
-        </el-button>
+        <el-button type="primary" @click="sendAddSch(addSchFormRef)"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import {
-  computed,
-  onBeforeMount,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
 import { addRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
@@ -117,7 +96,6 @@ let addSchForm = reactive({
   id: null,
   name: "",
   address: "",
-  is_delete: 0,
 });
 let pageParams = reactive({
   num: 1,

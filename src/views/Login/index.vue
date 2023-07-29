@@ -7,11 +7,7 @@
           <div class="loginFormItem">
             <div class="label">账号</div>
             <el-form-item>
-              <el-input
-                v-model="form.number"
-                placeholder="请输入账号"
-                class="loginInput"
-              />
+              <el-input v-model="form.number" placeholder="请输入账号" class="loginInput" />
             </el-form-item>
           </div>
           <div class="loginFormItem">
@@ -51,7 +47,6 @@ let form = reactive({
 const Login = async () => {
   const { number, password } = form;
   const res = await store.dispatch("user/userLogin", { number, password });
-  console.log(res);
   if (res.status_code === 10000) {
     ElMessage.success(res.status_msg);
     await router.push("/system");
@@ -62,11 +57,7 @@ const Login = async () => {
 </script>
 <style lang="less" scoped>
 .main {
-  background: linear-gradient(
-    180deg,
-    rgba(56, 148, 255, 0.3) 37%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(180deg, rgba(56, 148, 255, 0.3) 37%, rgba(255, 255, 255, 0) 100%);
   height: 100%;
   position: relative;
 }
