@@ -24,3 +24,12 @@ export const getManagersByRole = (roleId: number, size: number, num: number) =>
   requests.get<pageData<userDesc>>(`/user/manager/${roleId}/${size}/${num}`);
 
 export const cancelRole = (id: number) => requests.put<null>(`/user/manager/${id}`);
+
+export const changeTchRole = (body: { roleId: number; id: number }) =>
+  requests.put<null>("/user/manage/role", body);
+
+export const initPassword = (id: number, isStu: number) =>
+  requests.put<null>(`/user/manage/${id}/${isStu}/password`);
+
+export const deleteUser = (id: number, isStu: number) =>
+  requests.delete<null>(`/user/manage/${id}/${isStu}`);

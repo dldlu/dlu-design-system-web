@@ -8,6 +8,8 @@ import { classRequest, getClasses } from "@/service/info/class.ts";
 import { pageData } from "@/service/type.ts";
 import { getLog, log } from "@/service/log/log.ts";
 import { getManagersByRole } from "@/service/user/userManage.ts";
+import { degree, getAllDegrees } from "@/service/info/degree.ts";
+import { getAllTitles, title } from "@/service/info/title.ts";
 
 interface BaseInfoState {
   colleges: pageData<collegeRequest>;
@@ -18,6 +20,8 @@ interface BaseInfoState {
   schools: pageData<schoolRequest>;
   classes: pageData<classRequest>;
   logs: pageData<log>;
+  degrees: degree[];
+  titles: title[];
 }
 
 export interface pageBody {
@@ -31,12 +35,18 @@ export default {
     return {
       colleges: {} as pageData<collegeRequest>,
       majors: {} as pageData<majorRequest>,
-      users: {} as pageData<userDesc>,
+      users: {
+        array: [],
+        item_total: 0,
+        page_total: 0,
+      },
       managers: {} as pageData<userDesc>,
       roles: [],
       schools: {} as pageData<schoolRequest>,
       classes: {} as pageData<classRequest>,
       logs: {} as pageData<log>,
+      degrees: [],
+      titles: [],
     };
   },
   mutations: {
@@ -63,6 +73,12 @@ export default {
     },
     setLogs(state: BaseInfoState, payload: any) {
       state.logs = payload.logs;
+    },
+    setDegrees(state: BaseInfoState, payload: any) {
+      state.degrees = payload.degrees;
+    },
+    setTitles(state: BaseInfoState, payload: any) {
+      state.titles = payload.titles;
     },
   },
   actions: {
@@ -141,13 +157,23 @@ export default {
     async getUserByNumber({ commit }: any, data: { number: string; isStu: number }) {
       try {
         let result = await queryUserByNumber(data.number, data.isStu);
-        commit("setUsers", {
-          users: {
-            array: [result.data],
-            item_total: 1,
-            page_total: 1,
-          },
-        });
+        if (result.data !== null) {
+          commit("setUsers", {
+            users: {
+              array: [result.data],
+              item_total: 1,
+              page_total: 1,
+            },
+          });
+        } else {
+          commit("setUsers", {
+            users: {
+              array: [],
+              item_total: 0,
+              page_total: 0,
+            },
+          });
+        }
         return result;
       } catch (error: any) {
         return error.response.data;
@@ -156,7 +182,35 @@ export default {
     async getUserByMajor({ commit }: any, data: pageBody & { majorId: number; isStu: number }) {
       try {
         let result = await queryUserbyMajor(data.majorId, data.isStu, data.size, data.num);
-        commit("setUsers", { users: result.data });
+        if (result.data !== null) {
+          commit("setUsers", { users: result.data });
+        } else {
+          commit("setUsers", {
+            users: {
+              array: [],
+              item_total: 0,
+              page_total: 0,
+            },
+          });
+        }
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getDegrees({ commit }: any) {
+      try {
+        let result = await getAllDegrees();
+        commit("setDegrees", { degrees: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getTitles({ commit }: any) {
+      try {
+        let result = await getAllTitles();
+        commit("setTitles", { titles: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;
