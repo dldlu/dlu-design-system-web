@@ -71,7 +71,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination layout="prev, pager, next" :total="1000" />
+      <my-pagination :page_total="users.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
   <el-dialog v-model="addStuVisible" title="添加学生" width="35%" style="border-radius: 15px">
@@ -221,18 +221,21 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const router = useRouter();
 const store = useStore();
+let pageRef = ref();
 let is_Stu = ref<number>(1);
 let college_id = ref<number>(42);
 let major_id = ref<number>(4208);
-let way = ref<number>(1);
+let way = ref<number>(2);
 let number = ref<string>("");
 let addStuVisible = ref<boolean>(false);
 let addStuForm = reactive({
@@ -256,6 +259,10 @@ let addTchForm = reactive({
 });
 let changeRoleVisible = ref<boolean>(false);
 let currentRole = ref<number>(0);
+let pageParams = reactive({
+  num: 1,
+  size: 10,
+});
 let currentUserNumber = "";
 let users = computed(() => {
   return store.state.baseInfo.users;
@@ -280,6 +287,9 @@ const ways = [
     label: "只按专业",
   },
 ];
+const handleCurrentChange = (val: number) => {
+  pageParams.num = val;
+};
 /**
  * @description:显示修改权限弹窗
  * @return {*}
@@ -308,6 +318,12 @@ const getUserByNumber = () => {
     isStu: is_Stu.value,
   };
   store.dispatch("baseInfo/getUserByNumber", data);
+};
+const getData = (pageParams: pageBody) => {
+  if (way.value === 2) {
+  } else {
+    getUserByNumber();
+  }
 };
 const turnManager = () => {
   router.push({ name: "manager" });

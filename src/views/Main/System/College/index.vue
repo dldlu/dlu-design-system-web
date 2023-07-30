@@ -9,15 +9,17 @@
           :value="item.id"
         />
       </el-select>
-      <el-button @click="addColVisible = true">添加学院</el-button>
+      <el-button
+        @click="
+          () => {
+            addColVisible = true;
+          }
+        "
+        >添加学院</el-button
+      >
     </div>
     <div class="tableBody">
-      <el-table
-        :data="colleges.array"
-        stripe
-        style="margin-top: 20px"
-        max-height="500"
-      >
+      <el-table :data="colleges.array" stripe style="margin-top: 20px" max-height="500">
         <el-table-column prop="id" label="序号" min-width="90">
           <template #default="scope">
             <div>
@@ -41,12 +43,7 @@
                 v-model="colleges.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
-                @change="
-                  changeIsDelete(
-                    <number>colleges.array[scope.$index].id,
-                    scope.$index,
-                  )
-                "
+                @change="changeIsDelete(<number>colleges.array[scope.$index].id, scope.$index)"
                 size="small"
               />
             </div>
@@ -55,12 +52,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="colleges.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="colleges.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
   <el-dialog
@@ -90,34 +82,22 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="addColVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAddCol(addColFormRef)">
-          确定
-        </el-button>
+        <el-button type="primary" @click="sendAddCol(addColFormRef)"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import {
-  computed,
-  onBeforeMount,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import {
-  collegeRequest,
-  delCollege,
-  postCollege,
-} from "@/service/info/college.ts";
+import { collegeRequest, delCollege, postCollege } from "@/service/info/college.ts";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();
+let pageRef = ref();
 let schoolId = ref<number>(27);
 let addColVisible = ref<boolean>(false);
 let addColFormRef = ref<FormInstance>();
@@ -125,10 +105,6 @@ let addColForm = reactive({
   id: null,
   name: "",
   is_delete: 0,
-});
-let pageParams = reactive({
-  num: 1,
-  size: 10,
 });
 let addColFormRules = reactive<FormRules>({
   id: [{ required: true, message: "学院代码不能为空", trigger: "blur" }],
@@ -140,19 +116,12 @@ let schools = computed(() => {
 let colleges = computed(() => {
   return store.state.baseInfo.colleges;
 });
-watch(pageParams, () => {
-  getData();
-});
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
 /**
  * @description:获取学院数据
  * @return {*}
  */
-const getData = () => {
-  const params = JSON.parse(JSON.stringify(pageParams));
-  store.dispatch("baseInfo/getColleges", params);
+const getData = (pageParams: pageBody) => {
+  store.dispatch("baseInfo/getColleges", pageParams);
 };
 /**
  * @description:发起新增学院请求
@@ -167,7 +136,7 @@ let sendAddCol = async (formEl: FormInstance | undefined) => {
       console.log(res);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        getData();
+        pageRef.value.comGetData();
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -198,7 +167,6 @@ let closeDialog = () => {
 };
 onMounted(() => {
   store.dispatch("baseInfo/getSchools", { size: 0, num: 0 });
-  getData();
 });
 </script>
 <style lang="less" scoped></style>

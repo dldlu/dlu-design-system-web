@@ -35,12 +35,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="managers.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="managers.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
 </template>
@@ -49,15 +44,14 @@ import { computed, onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { cancelRole } from "@/service/user/userManage.ts";
 import { ElMessage } from "element-plus";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();
+let pageRef = ref();
 let managerType = ref<number>(3);
 let managers = computed(() => {
   return store.state.baseInfo.managers;
-});
-let pageParams = reactive({
-  num: 1,
-  size: 10,
 });
 const options = [
   {
@@ -74,30 +68,25 @@ const options = [
   },
 ];
 watch(managerType, () => {
-  getData();
+  pageRef.value.reset();
+  pageRef.value.comGetData();
 });
 const cancel = async (id: number, index: number) => {
   let res = await cancelRole(id);
   console.log(res);
   if (res.status_code === 10000) {
     ElMessage.success(res.status_msg);
-    getData();
+    pageRef.value.comGetData();
   } else {
     ElMessage.error(res.status_msg);
     store.state.baseInfo.managers.array[index].is_delete =
       store.state.baseInfo.managers.array[index].is_delete === 0 ? 1 : 0;
   }
 };
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
-const getData = () => {
+const getData = (pageParams: pageBody) => {
   const params = JSON.parse(JSON.stringify(pageParams));
   params.roleId = managerType.value;
   store.dispatch("baseInfo/getManagers", params);
 };
-onMounted(() => {
-  getData();
-});
 </script>
 <style lang="less" scoped></style>

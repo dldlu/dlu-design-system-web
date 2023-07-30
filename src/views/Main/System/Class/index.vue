@@ -51,12 +51,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="classes.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="classes.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
   <el-dialog
@@ -100,8 +95,11 @@ import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
 import { classRequest, delClass, postClass } from "@/service/info/class.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();
+let pageRef = ref();
 let college_id = ref<number>(42);
 let addClaVisible = ref<boolean>(false);
 let addClaFormRef = ref<FormInstance>();
@@ -111,10 +109,6 @@ let addClaForm = reactive({
   major_id: 4208,
   grade: 2023,
 });
-let pageParams = reactive({
-  num: 1,
-  size: 10,
-});
 let addClaFormRules = reactive<FormRules>({
   id: [{ required: true, message: "班级代码不能为空", trigger: "blur" }],
   name: [{ required: true, message: "班级名称不能为空", trigger: "blur" }],
@@ -123,22 +117,16 @@ const grades = reactive([]);
 let classes = computed(() => {
   return store.state.baseInfo.classes;
 });
-watch(pageParams, () => {
-  getData();
-});
 watch([() => addClaForm.major_id, () => addClaForm.grade], () => {
-  pageParams.num = 1;
-  pageParams.size = 10;
-  getData();
+  pageRef.value.reset();
+  pageRef.value.comGetData();
 });
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
+
 /**
  * @description:获取班级数据
  * @return {*}
  */
-const getData = () => {
+const getData = (pageParams: pageBody) => {
   const params = JSON.parse(JSON.stringify(pageParams));
   params.majorId = addClaForm.major_id;
   params.grade = addClaForm.grade;
@@ -156,7 +144,7 @@ let sendAddCla = async (formEl: FormInstance | undefined) => {
       let res = await postClass(form as classRequest);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        getData();
+        pageRef.value.comGetData();
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -201,7 +189,6 @@ let getGrades = () => {
 };
 onMounted(() => {
   getGrades();
-  getData();
 });
 </script>
 <style lang="less" scoped></style>

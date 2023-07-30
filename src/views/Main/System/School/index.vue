@@ -38,12 +38,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="schools.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="schools.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
   <el-dialog
@@ -88,18 +83,17 @@ import { addRole } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delSchool, postSchool, schoolRequest } from "@/service/info/school.ts";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();
+let pageRef = ref();
 let addSchVisible = ref<boolean>(false);
 let addSchFormRef = ref<FormInstance>();
 let addSchForm = reactive({
   id: null,
   name: "",
   address: "",
-});
-let pageParams = reactive({
-  num: 1,
-  size: 10,
 });
 let addSchFormRules = reactive<FormRules>({
   id: [{ required: true, message: "学校代码不能为空", trigger: "blur" }],
@@ -109,17 +103,11 @@ let addSchFormRules = reactive<FormRules>({
 let schools = computed(() => {
   return store.state.baseInfo.schools;
 });
-watch(pageParams, () => {
-  getData();
-});
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
 /**
  * @description:获取学校数据
  * @return {*}
  */
-const getData = () => {
+const getData = (pageParams: pageBody) => {
   const params = JSON.parse(JSON.stringify(pageParams));
   store.dispatch("baseInfo/getSchools", params);
 };
@@ -135,7 +123,7 @@ let sendAddSch = async (formEl: FormInstance | undefined) => {
       let res = await postSchool(form as schoolRequest);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        getData();
+        pageRef.value.comGetData();
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -164,8 +152,5 @@ let closeDialog = () => {
   addSchForm.id = null;
   addSchForm.name = "";
 };
-onMounted(() => {
-  getData();
-});
 </script>
 <style lang="less" scoped></style>

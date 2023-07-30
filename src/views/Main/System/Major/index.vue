@@ -41,12 +41,7 @@
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="majors.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="majors.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
   <el-dialog
@@ -88,18 +83,17 @@ import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
+import MyPagination from "@/components/MyPagination.vue";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();
+let pageRef = ref();
 let addMajVisible = ref<boolean>(false);
 let addMajFormRef = ref<FormInstance>();
 let addMajForm = reactive({
   id: null,
   name: "",
   college_id: 21,
-});
-let pageParams = reactive({
-  num: 1,
-  size: 10,
 });
 let addMajFormRules = reactive<FormRules>({
   id: [{ required: true, message: "专业代码不能为空", trigger: "blur" }],
@@ -108,25 +102,18 @@ let addMajFormRules = reactive<FormRules>({
 let majors = computed(() => {
   return store.state.baseInfo.majors;
 });
-watch(pageParams, () => {
-  getData();
-});
 watch(
   () => addMajForm.college_id,
   () => {
-    pageParams.num = 1;
-    pageParams.size = 10;
-    getData();
+    pageRef.value.reset();
+    pageRef.value.comGetData();
   },
 );
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
 /**
  * @description:获取专业数据
  * @return {*}
  */
-const getData = () => {
+const getData = (pageParams: pageBody) => {
   const params = JSON.parse(JSON.stringify(pageParams));
   params.collegeId = addMajForm.college_id;
   store.dispatch("baseInfo/getMajorsByCollege", params);
@@ -143,7 +130,7 @@ let sendAddMaj = async (formEl: FormInstance | undefined) => {
       let res = await postMajor(form as majorRequest);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        getData();
+        pageRef.value.comGetData();
       } else {
         ElMessage.error(res.status_msg);
       }
@@ -172,8 +159,5 @@ let closeDialog = () => {
   addMajForm.id = null;
   addMajForm.name = "";
 };
-onMounted(() => {
-  getData();
-});
 </script>
 <style lang="less" scoped></style>

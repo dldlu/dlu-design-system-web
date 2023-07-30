@@ -20,7 +20,7 @@ interface BaseInfoState {
   logs: pageData<log>;
 }
 
-interface pageBody {
+export interface pageBody {
   size: number;
   num: number;
 }

@@ -38,6 +38,7 @@ declare module '@vue/runtime-core' {
     MyBreadcrumb: typeof import('./src/components/MyBreadcrumb.vue')['default']
     MyHeader: typeof import('./src/components/MyHeader.vue')['default']
     MyNav: typeof import('./src/components/MyNav.vue')['default']
+    MyPagination: typeof import('./src/components/MyPagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
