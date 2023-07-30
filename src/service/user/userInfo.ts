@@ -23,17 +23,17 @@ export interface userDesc {
   is_delete: number;
 }
 
-export const queryUserById = (id: string, isStu: string) =>
+export const queryUserById = (id: string, isStu: number) =>
   requests.get<userDesc>(`/user/info/id/${id}/${isStu}`);
 
-export const queryUserByNumber = (number: string, isStu: string) =>
+export const queryUserByNumber = (number: string, isStu: number) =>
   requests.get<userDesc>(`/user/info/number/${number}/${isStu}`);
 
-export const queryUserbyMajor = (majorId: string, isStu: string, size: string, num: string) =>
+export const queryUserbyMajor = (majorId: number, isStu: number, size: number, num: number) =>
   requests.get<userDesc>(`/user/info/major/${majorId}/${isStu}/${size}/${num}`);
 
-export const queryUserByCollege = (collegeId: string, isStu: string, size: string, num: string) =>
+export const queryUserByCollege = (collegeId: number, isStu: number, size: number, num: number) =>
   requests.get<userDesc>(`/user/info/college/${collegeId}/${isStu}/${size}/${num}`);
 
-export const queryUserByNumberMajor = (number: string, majorId: string, isStu: string) =>
+export const queryUserByNumberMajor = (number: string, majorId: number, isStu: number) =>
   requests.get<userDesc>(`/user/info/number/${number}/${majorId}/${isStu}`);

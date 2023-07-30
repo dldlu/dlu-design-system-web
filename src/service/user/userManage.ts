@@ -22,3 +22,5 @@ export const addUser = (body: userBody) => requests.post<null>("/user/manage", b
 
 export const getManagersByRole = (roleId: number, size: number, num: number) =>
   requests.get<pageData<userDesc>>(`/user/manager/${roleId}/${size}/${num}`);
+
+export const cancelRole = (id: number) => requests.put<null>(`/user/manager/${id}`);

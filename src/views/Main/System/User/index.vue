@@ -11,22 +11,17 @@
       </el-select>
       <college-select v-model:college_id="college_id" class="collegeSelect" />
       <major-select v-model:major_id="major_id" :college_id="college_id" class="majorSelect" />
-      <el-select v-model="is_Stu" class="numberSelect">
-        <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        />
+      <el-select v-model="way" class="numberSelect">
+        <el-option v-for="item in ways" :key="item.value" :label="item.label" :value="item.value" />
       </el-select>
-      <el-input v-model="number" placeholder="请输入内容" class="numberInput" />
-      <el-button>查询</el-button>
+      <el-input v-show="way === 1" v-model="number" placeholder="请输入内容" class="numberInput" />
+      <el-button v-show="way === 1" @click="getUserByNumber">查询</el-button>
       <el-button @click="addStuVisible = true">添加学生</el-button>
       <el-button @click="addTchVisible = true">添加教工</el-button>
       <el-button @click="turnManager">管理员名单</el-button>
     </div>
     <div class="tableBody">
-      <el-table :data="users" stripe style="margin-top: 20px">
+      <el-table :data="users.array" stripe style="margin-top: 20px">
         <el-table-column prop="id" label="序号" min-width="90" />
         <el-table-column prop="number" label="账号" min-width="120" />
         <el-table-column prop="name" label="姓名" min-width="90" />
@@ -39,7 +34,9 @@
               <el-button
                 type="primary"
                 size="small"
-                @click="changeRole(users[scope.$index].number, users[scope.$index].role_id)"
+                @click="
+                  changeRole(users.array[scope.$index].number, users.array[scope.$index].role_id)
+                "
                 >修改权限
               </el-button>
             </div>
@@ -63,7 +60,7 @@
           <template #default="scope">
             <div>
               <el-checkbox
-                v-model="users[scope.$index].is_delete"
+                v-model="users.array[scope.$index].is_delete"
                 :true-label="0"
                 :false-label="1"
                 size="small"
@@ -232,9 +229,10 @@ import MajorSelect from "@/components/majorSelect.vue";
 
 const router = useRouter();
 const store = useStore();
-let is_Stu = ref<string>("0");
+let is_Stu = ref<number>(1);
 let college_id = ref<number>(42);
 let major_id = ref<number>(4208);
+let way = ref<number>(1);
 let number = ref<string>("");
 let addStuVisible = ref<boolean>(false);
 let addStuForm = reactive({
@@ -264,12 +262,22 @@ let users = computed(() => {
 });
 const options = [
   {
-    value: "0",
+    value: 2,
     label: "教师",
   },
   {
-    value: "1",
+    value: 1,
     label: "学生",
+  },
+];
+const ways = [
+  {
+    value: 1,
+    label: "只按学号/工号",
+  },
+  {
+    value: 2,
+    label: "只按专业",
   },
 ];
 /**
@@ -289,6 +297,17 @@ const changeRole = (number: string, role_id: number) => {
  */
 const setUserRole = () => {
   console.log(currentUserNumber);
+};
+/**
+ * @description:通过学号或工号查询用户
+ * @return {*}
+ */
+const getUserByNumber = () => {
+  const data = {
+    number: number.value,
+    isStu: is_Stu.value,
+  };
+  store.dispatch("baseInfo/getUserByNumber", data);
 };
 const turnManager = () => {
   router.push({ name: "manager" });

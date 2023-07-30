@@ -1,5 +1,5 @@
 import { getRoleList, roleRes } from "@/service/user/userRole.ts";
-import { userDesc } from "@/service/user/userInfo.ts";
+import { queryUserbyMajor, queryUserByNumber, userDesc } from "@/service/user/userInfo.ts";
 import { getSchools } from "@/service/info/school.ts";
 import { schoolRequest } from "@/service/info/school.ts";
 import { getColleges, collegeRequest } from "@/service/info/college.ts";
@@ -12,8 +12,8 @@ import { getManagersByRole } from "@/service/user/userManage.ts";
 interface BaseInfoState {
   colleges: pageData<collegeRequest>;
   majors: pageData<majorRequest>;
-  users: userDesc[];
-  managers: userDesc[];
+  users: pageData<userDesc>;
+  managers: pageData<userDesc>;
   roles: roleRes[];
   schools: pageData<schoolRequest>;
   classes: pageData<classRequest>;
@@ -31,169 +31,8 @@ export default {
     return {
       colleges: {} as pageData<collegeRequest>,
       majors: {} as pageData<majorRequest>,
-      users: [
-        {
-          id: 56,
-          number: "21391006",
-          name: "张芸搏",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 1,
-          is_delete: 0,
-        },
-        {
-          id: 56,
-          number: "21391021",
-          name: "梁亮",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 7,
-          is_delete: 1,
-        },
-        {
-          id: 56,
-          number: "21391006",
-          name: "张芸搏",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 1,
-          is_delete: 0,
-        },
-        {
-          id: 56,
-          number: "21391021",
-          name: "梁亮",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 7,
-          is_delete: 1,
-        },
-        {
-          id: 56,
-          number: "21391006",
-          name: "张芸搏",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 1,
-          is_delete: 0,
-        },
-        {
-          id: 56,
-          number: "21391021",
-          name: "梁亮",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 7,
-          is_delete: 1,
-        },
-        {
-          id: 56,
-          number: "21391006",
-          name: "张芸搏",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 1,
-          is_delete: 0,
-        },
-        {
-          id: 56,
-          number: "21391021",
-          name: "梁亮",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 7,
-          is_delete: 1,
-        },
-        {
-          id: 56,
-          number: "21391006",
-          name: "张芸搏",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 1,
-          is_delete: 0,
-        },
-        {
-          id: 56,
-          number: "21391021",
-          name: "梁亮",
-          phone: "18185565868",
-          email: "t.wdnbl@qq.com",
-          college_id: 41,
-          college_name: "万动下张候",
-          major_id: 17,
-          major_name: "称安就生什",
-          class_id: 54,
-          class_name: "软件211",
-          is_stu: 86,
-          role_id: 7,
-          is_delete: 1,
-        },
-      ],
-      managers: [],
+      users: {} as pageData<userDesc>,
+      managers: {} as pageData<userDesc>,
       roles: [],
       schools: {} as pageData<schoolRequest>,
       classes: {} as pageData<classRequest>,
@@ -294,6 +133,30 @@ export default {
       try {
         let result = await getManagersByRole(data.roleId, data.size, data.num);
         commit("setManager", { managers: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getUserByNumber({ commit }: any, data: { number: string; isStu: number }) {
+      try {
+        let result = await queryUserByNumber(data.number, data.isStu);
+        commit("setUsers", {
+          users: {
+            array: [result.data],
+            item_total: 1,
+            page_total: 1,
+          },
+        });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getUserByMajor({ commit }: any, data: pageBody & { majorId: number; isStu: number }) {
+      try {
+        let result = await queryUserbyMajor(data.majorId, data.isStu, data.size, data.num);
+        commit("setUsers", { users: result.data });
         return result;
       } catch (error: any) {
         return error.response.data;
