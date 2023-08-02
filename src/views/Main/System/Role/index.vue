@@ -5,7 +5,7 @@
     </div>
     <div class="tableBody">
       <el-table :data="roles" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column prop="id" label="序号" min-width="90">
+        <el-table-column label="序号" min-width="90">
           <template #default="scope">
             <div>
               {{ scope.$index + 1 }}
@@ -61,9 +61,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="addRoleVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAddRole(addRoleFormRef)">
-          确定
-        </el-button>
+        <el-button type="primary" @click="sendAddRole(addRoleFormRef)"> 确定 </el-button>
       </span>
     </template>
   </el-dialog>

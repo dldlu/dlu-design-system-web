@@ -6,7 +6,7 @@ import { getColleges, collegeRequest } from "@/service/info/college.ts";
 import { getMajors, getMajorsCollege, majorRequest } from "@/service/info/major.ts";
 import { classRequest, getClasses } from "@/service/info/class.ts";
 import { pageData } from "@/service/type.ts";
-import { getLog, log } from "@/service/log/log.ts";
+import { getLog, log, logRequest } from "@/service/log/log.ts";
 import { getManagersByRole } from "@/service/user/userManage.ts";
 import { degree, getAllDegrees } from "@/service/info/degree.ts";
 import { getAllTitles, title } from "@/service/info/title.ts";
@@ -136,9 +136,9 @@ export default {
         return error.response.data;
       }
     },
-    async getLogs({ commit }: any, data: pageBody) {
+    async getLogs({ commit }: any, data: logRequest) {
       try {
-        let result = await getLog(data.size, data.num);
+        let result = await getLog(data);
         commit("setLogs", { logs: result.data });
         return result;
       } catch (error: any) {

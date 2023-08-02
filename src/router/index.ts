@@ -100,7 +100,7 @@ router.beforeEach(async (to, _, next) => {
         store.state.user.addRouters.forEach((x: any) => {
           router.addRoute(x);
         }); // 动态添加可访问路由表
-        next({ ...to, replace: true });
+        next(to.fullPath);
       } else {
         if (to.name === "login") {
           next();

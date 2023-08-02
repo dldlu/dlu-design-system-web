@@ -1,231 +1,158 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-select v-model="addClaForm.grade" style="width: 140px; margin-right: 10px">
-        <el-option
-          v-for="item in grades"
-          :key="item.value"
-          :label="item.value"
-          :value="item.value"
+      <div style="width: 380px; margin-right: 10px">
+        <el-date-picker
+          v-model="timeRange"
+          type="daterange"
+          range-separator="To"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          @calendar-change="getData({ size: 10, num: 1 })"
+          size="default"
         />
-      </el-select>
-      <el-select v-model="college_id" style="width: 140px; margin-right: 10px">
+      </div>
+      <el-select v-model="logParams.stateId" style="width: 140px; margin-right: 10px">
         <el-option
-          v-for="item in colleges.array"
+          v-for="item in stateOptions"
           :key="item.id"
           :label="item.name"
           :value="item.id"
         />
       </el-select>
-      <el-select v-model="addClaForm.major_id" style="width: 140px; margin-right: 10px">
+      <el-select v-model="logParams.methodId" style="width: 140px; margin-right: 10px">
         <el-option
-          v-for="item in majors.array"
+          v-for="item in methodOptions"
           :key="item.id"
           :label="item.name"
           :value="item.id"
         />
       </el-select>
-      <el-button @click="addClaVisible = true">添加班级</el-button>
+      <el-button @click="clear">清空筛选</el-button>
     </div>
     <div class="tableBody">
-      <el-table :data="classes.array" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column prop="id" label="序号" min-width="90">
+      <el-table :data="logs.array" stripe style="margin-top: 20px" max-height="500">
+        <el-table-column prop="id" label="序号" min-width="90" />
+        <el-table-column prop="operator" label="账号" min-width="100" />
+        <el-table-column prop="content" label="日志内容" min-width="100" />
+        <el-table-column label="操作类型" min-width="100">
           <template #default="scope">
             <div>
-              {{ scope.$index + 1 }}
+              <el-tag :type="methodOptions[logs.array[scope.$index].method].type" effect="dark">
+                {{ methodOptions[logs.array[scope.$index].method].name }}
+              </el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="id" label="班级代码" min-width="100" />
-        <el-table-column prop="name" label="班级名称" min-width="150" />
-        <el-table-column label="班级信息" min-width="150">
+        <el-table-column label="日志类型" min-width="100">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-tag :type="stateOptions[logs.array[scope.$index].state].type" effect="dark">
+                {{ stateOptions[logs.array[scope.$index].state].name }}
+              </el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="有效" min-width="100">
-          <template #default="scope">
-            <div>
-              <el-checkbox
-                v-model="majors.array[scope.$index].is_delete"
-                :true-label="0"
-                :false-label="1"
-                @change="changeIsDelete(<number>majors.array[scope.$index].id, scope.$index)"
-                size="small"
-              />
-            </div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="operator_ip" label="ip" min-width="100" />
+        <el-table-column prop="created_at" label="时间" min-width="100" />
       </el-table>
     </div>
     <div class="tableFooter">
-      <el-pagination
-        v-model:current-page="pageParams.num"
-        layout="prev, pager, next"
-        :page-count="majors.page_total || 1"
-        @current-change="handleCurrentChange"
-      />
+      <my-pagination :page_total="logs.page_total" @getData="getData" ref="pageRef" />
     </div>
   </div>
-  <el-dialog
-    v-model="addClaVisible"
-    title="添加班级"
-    width="35%"
-    style="border-radius: 15px"
-    @close="closeDialog"
-  >
-    <div style="display: flex; justify-content: center">
-      <el-form
-        ref="addClaFormRef"
-        label-position="left"
-        label-width="100px"
-        :model="addClaForm"
-        :rules="addClaFormRules"
-        style="max-width: 460px"
-      >
-        <el-form-item label="班级代码" prop="id">
-          <el-input v-model.number="addClaForm.id" />
-        </el-form-item>
-        <el-form-item label="班级名称" prop="name">
-          <el-input v-model="addClaForm.name" />
-        </el-form-item>
-      </el-form>
-    </div>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="addClaVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAddCla(addClaFormRef)"> 确定 </el-button>
-      </span>
-    </template>
-  </el-dialog>
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
-import { ElMessage } from "element-plus";
-import type { FormInstance, FormRules } from "element-plus";
-import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
-import { classRequest, delClass, postClass } from "@/service/info/class.ts";
+import {
+  computed,
+  nextTick,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  toRefs,
+  watch,
+} from "vue";
+import MyPagination from "@/components/MyPagination.vue";
 
 const store = useStore();
-let college_id = ref<number>(42);
-let addClaVisible = ref<boolean>(false);
-let addClaFormRef = ref<FormInstance>();
-let addClaForm = reactive({
-  id: null,
-  name: "",
-  major_id: 4208,
-  grade: 2023,
+let pageRef = ref();
+let timeRange = ref([null, null]);
+let logParams = reactive({
+  stateId: 0,
+  methodId: 0,
 });
-let pageParams = reactive({
-  num: 1,
-  size: 10,
+const stateOptions = [
+  {
+    id: 0,
+    name: "全部日志",
+  },
+  {
+    id: 1,
+    name: "常规日志",
+    type: "",
+  },
+  {
+    id: 2,
+    name: "错误日志",
+    type: "danger",
+  },
+];
+const methodOptions = [
+  {
+    id: 0,
+    name: "全部类型",
+  },
+  {
+    id: 1,
+    name: "新增",
+    type: "success",
+  },
+  {
+    id: 2,
+    name: "删除",
+    type: "danger",
+  },
+  {
+    id: 3,
+    name: "修改",
+    type: "warning",
+  },
+  {
+    id: 4,
+    name: "查询",
+    type: "",
+  },
+];
+let logs = computed(() => {
+  return store.state.baseInfo.logs;
 });
-let addClaFormRules = reactive<FormRules>({
-  id: [{ required: true, message: "班级代码不能为空", trigger: "blur" }],
-  name: [{ required: true, message: "班级名称不能为空", trigger: "blur" }],
+watch(logParams, () => {
+  getData({ size: 10, num: 1 });
 });
-const grades = reactive([]);
-let majors = computed(() => {
-  return store.state.baseInfo.majors;
-});
-let colleges = computed(() => {
-  return store.state.baseInfo.colleges;
-});
-let classes = computed(() => {
-  return store.state.baseInfo.classes;
-});
-watch(pageParams, () => {
-  getData();
-});
-watch(college_id, async () => {
-  await store.dispatch("baseInfo/getMajorsByCollege", {
-    size: 0,
-    num: 0,
-    collegeId: college_id.value,
-  });
-  addClaForm.major_id = store.state.baseInfo.majors.array[0].id;
-});
-watch([() => addClaForm.major_id, () => addClaForm.grade], () => {
-  pageParams.num = 1;
-  pageParams.size = 10;
-  getData();
-});
-const handleCurrentChange = (val: number) => {
-  pageParams.num = val;
-};
 /**
  * @description:获取班级数据
  * @return {*}
  */
-const getData = () => {
-  const params = JSON.parse(JSON.stringify(pageParams));
-  params.majorId = addClaForm.major_id;
-  params.grade = addClaForm.grade;
-  store.dispatch("baseInfo/getClasses", params);
-};
-/**
- * @description:发起新增班级请求
- * @return {*}
- */
-let sendAddCla = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate(async (valid, fields) => {
-    if (valid) {
-      const form = toRaw(addClaForm);
-      let res = await postClass(form as classRequest);
-      if (res.status_code === 10000) {
-        ElMessage.success(res.status_msg);
-        getData();
-      } else {
-        ElMessage.error(res.status_msg);
-      }
-    } else {
-      ElMessage.error("有错误信息");
-    }
+const getData = (pageParams) => {
+  nextTick(() => {
+    const params = JSON.parse(JSON.stringify(pageParams));
+    params.stateId = logParams.stateId;
+    params.methodId = logParams.methodId;
+    params.start = timeRange.value[0];
+    params.end = timeRange.value[1];
+    console.log(timeRange.value);
+    console.log(params);
+    store.dispatch("baseInfo/getLogs", params);
   });
 };
-/**
- * @description:修改是否有效
- * @return {*}
- * @param classId 班级id
- * @param index 索引
- */
-let changeIsDelete = async (classId: number, index: number) => {
-  let res = await delClass(classId);
-  if (res.status_code === 10000) {
-    ElMessage.success(res.status_msg);
-  } else {
-    ElMessage.error(res.status_msg);
-    store.state.baseInfo.colleges.array[index].is_delete =
-      store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
-  }
+const clear = () => {
+  logParams.methodId = 0;
+  logParams.stateId = 0;
+  timeRange.value = [null, null];
+  getData({ size: 0, num: 0 });
 };
-let closeDialog = () => {
-  addClaForm.id = null;
-  addClaForm.name = "";
-};
-/**
- * @description:获取年份
- * @return {*}
- */
-let getGrades = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  addClaForm.grade = year;
-  for (let i = 0; i < 5; i++) {
-    grades.push({
-      value: year - i,
-    });
-  }
-};
-onMounted(() => {
-  getGrades();
-  store.dispatch("baseInfo/getColleges", { size: 0, num: 0 });
-  store.dispatch("baseInfo/getMajorsByCollege", { size: 0, num: 0, collegeId: college_id.value });
-  getData();
-});
 </script>
 <style lang="less" scoped></style>

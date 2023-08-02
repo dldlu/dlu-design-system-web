@@ -20,7 +20,7 @@
     </div>
     <div class="tableBody">
       <el-table :data="colleges.array" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column prop="id" label="序号" min-width="90">
+        <el-table-column label="序号" min-width="90">
           <template #default="scope">
             <div>
               {{ scope.$index + 1 }}

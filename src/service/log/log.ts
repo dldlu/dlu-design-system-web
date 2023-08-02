@@ -1,6 +1,14 @@
 import { requests } from "@/service/axios";
 import { pageData } from "@/service/type.ts";
 
+export interface logRequest {
+  end: null | string;
+  methodId: number;
+  num: number;
+  size: number;
+  start: null | string;
+  stateId: number;
+}
 export interface log {
   content: string;
   created_at: string;
@@ -11,14 +19,4 @@ export interface log {
   state: number;
 }
 
-export const getLog = (size: number, num: number) =>
-  requests.get<pageData<log>>(`/log/${size}/${num}`);
-
-export const getLogData = (start: number, end: number, size: number, num: number) =>
-  requests.get<pageData<log>>(`/log/date/${start}/${end}/${size}/${num}`);
-
-export const getLogMethod = (methodId: number, size: number, num: number) =>
-  requests.get<pageData<log>>(`/log/method/${methodId}/${size}/${num}`);
-
-export const getLogState = (stateId: number, size: number, num: number) =>
-  requests.get<pageData<log>>(`/log/state/${stateId}/${size}/${num}`);
+export const getLog = (body: logRequest) => requests.post<pageData<log>>(`/log`, body);
