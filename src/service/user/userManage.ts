@@ -33,3 +33,5 @@ export const initPassword = (id: number, isStu: number) =>
 
 export const deleteUser = (id: number, isStu: number) =>
   requests.delete<null>(`/user/manage/${id}/${isStu}`);
+
+export const changeUserInfo = (body: userBody) => requests.put<null>("/user/manage", body);

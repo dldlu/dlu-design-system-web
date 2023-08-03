@@ -80,13 +80,14 @@ export default {
           return res;
         }
       } catch (error: any) {
-        return error.response.data;
+        console.log(error);
+        return error;
       }
     },
     async getUserDesc({ commit }: any) {
       const number = localStorage.getItem("Number");
       const is_stu = localStorage.getItem("IsStu");
-      let result = await queryUserByNumber(number as string, is_stu as string);
+      let result = await queryUserByNumber(number as string, Number(is_stu));
       if (result.status_code === 10000) {
         commit("setUserDesc", result.data);
       } else {

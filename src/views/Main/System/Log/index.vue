@@ -54,7 +54,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="operator_ip" label="ip" min-width="100" />
-        <el-table-column prop="created_at" label="时间" min-width="100" />
+        <el-table-column prop="time" label="时间" min-width="100" />
       </el-table>
     </div>
     <div class="tableFooter">
@@ -64,17 +64,7 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import {
-  computed,
-  nextTick,
-  onBeforeMount,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-  toRefs,
-  watch,
-} from "vue";
+import { computed, nextTick, reactive, ref, watch } from "vue";
 import MyPagination from "@/components/MyPagination.vue";
 
 const store = useStore();
@@ -133,7 +123,7 @@ watch(logParams, () => {
   getData({ size: 10, num: 1 });
 });
 /**
- * @description:获取班级数据
+ * @description:获取日志数据
  * @return {*}
  */
 const getData = (pageParams) => {
@@ -143,8 +133,6 @@ const getData = (pageParams) => {
     params.methodId = logParams.methodId;
     params.start = timeRange.value[0];
     params.end = timeRange.value[1];
-    console.log(timeRange.value);
-    console.log(params);
     store.dispatch("baseInfo/getLogs", params);
   });
 };
