@@ -3,8 +3,9 @@
     <div class="font title">网站首页</div>
     <div class="font user">
       <el-dropdown>
-        <span style="outline: none !important;">
-          你好,<span class="name">{{ userName }}</span>{{ type }}
+        <span style="outline: none !important">
+          你好,<span class="name">{{ userName }}</span
+          >{{ type }}
           <el-icon>
             <arrow-down />
           </el-icon>
@@ -20,15 +21,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ArrowDown } from '@element-plus/icons-vue'
-import {useRouter} from "vue-router";
-const router=useRouter()
-const userName = '邱少明'
-const type = '老师'
-const logOut=()=>{
-  localStorage.removeItem('TOKEN')
-  router.push({name:'login'})
-}
+import { ArrowDown } from "@element-plus/icons-vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const userName = "邱少明";
+const type = "老师";
+const logOut = () => {
+  localStorage.removeItem("TOKEN");
+  router.push({ name: "login" });
+};
 </script>
 
 <style lang="less" scoped>
@@ -37,11 +38,12 @@ const logOut=()=>{
   min-width: 1180px;
   height: 72px;
   background-color: rgba(255, 255, 255, 1);
-  box-shadow: 0 3px 6px 0 #D7D6D6;
+  box-shadow: 0 3px 6px 0 #d7d6d6;
   display: flex;
   justify-content: end;
   align-items: center;
   z-index: 100;
+  border-radius: 0 0 0 20px;
 }
 
 .font {
@@ -50,14 +52,14 @@ const logOut=()=>{
   text-align: left;
   font-family: SourceHanSansSC-regular;
 }
-.title{
+.title {
   margin-right: 32px;
   cursor: pointer;
 }
-.user{
+.user {
   margin-right: 25px;
 }
-.name{
-  color: #B7E0F7;
+.name {
+  color: #b7e0f7;
 }
 </style>

@@ -1,4 +1,5 @@
-import { asyncRouterMap, constantRouterMap } from "@/router";
+import { asyncRouterMap } from "@/router/asyncRouterMap.ts";
+import { constantRouterMap } from "@/router/constantRouterMap.ts";
 import { checkRole, LoginBody, stuLogin, tchLogin } from "@/service/user/login.ts";
 import { queryUserByNumber, userDesc } from "@/service/user/userInfo.ts";
 

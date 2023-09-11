@@ -133,6 +133,7 @@ const getData = (pageParams) => {
     params.methodId = logParams.methodId;
     params.start = timeRange.value[0];
     params.end = timeRange.value[1];
+    console.log(params);
     store.dispatch("baseInfo/getLogs", params);
   });
 };
@@ -140,7 +141,8 @@ const clear = () => {
   logParams.methodId = 0;
   logParams.stateId = 0;
   timeRange.value = [null, null];
-  getData({ size: 0, num: 0 });
+  pageRef.value.reset();
+  getData({ size: 10, num: 1 });
 };
 </script>
 <style lang="less" scoped></style>

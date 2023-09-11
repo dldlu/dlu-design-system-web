@@ -13,6 +13,13 @@
       <el-menu-item index="/system/class">班级管理</el-menu-item>
       <el-menu-item index="/system/log">日志管理</el-menu-item>
     </el-sub-menu>
+    <el-sub-menu index="paper">
+      <template #title>
+        <img src="../assets/md-room@1x.png" />
+        <span class="font" style="margin-left: 20px">论文管理</span>
+      </template>
+      <el-menu-item index="/paper/approval">题目审批表</el-menu-item>
+    </el-sub-menu>
     <el-sub-menu index="2">
       <template #title>
         <img src="../assets/md-room@1x.png" />
