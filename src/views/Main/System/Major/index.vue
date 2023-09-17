@@ -21,7 +21,9 @@
         <el-table-column label="专业信息" min-width="150">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-button type="warning" size="small" @click="changeForm(majors.array[scope.$index])"
+                >修改信息</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -46,7 +48,7 @@
   </div>
   <el-dialog
     v-model="addMajVisible"
-    title="添加专业"
+    :title="dialogTitle"
     width="35%"
     style="border-radius: 15px"
     @close="closeDialog"
@@ -81,16 +83,23 @@ import { useStore } from "vuex";
 import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
+import { delMajor, majorRequest, postMajor, putMajor } from "@/service/info/major.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MyPagination from "@/components/MyPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
+type addMajForm = {
+  id: null | number;
+  name: string;
+  college_id: number;
+};
+
 const store = useStore();
+let dialogTitle = "添加专业";
 let pageRef = ref();
 let addMajVisible = ref<boolean>(false);
 let addMajFormRef = ref<FormInstance>();
-let addMajForm = reactive({
+let addMajForm = reactive<addMajForm>({
   id: null,
   name: "",
   college_id: 21,
@@ -126,8 +135,8 @@ let sendAddMaj = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const form = toRaw(addMajForm);
-      let res = await postMajor(form as majorRequest);
+      const form = toRaw(addMajForm) as majorRequest;
+      let res = dialogTitle === "添加专业" ? await postMajor(form) : await putMajor(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         pageRef.value.comGetData();
@@ -155,9 +164,16 @@ let changeIsDelete = async (majorId: number, index: number) => {
       store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
   }
 };
+let changeForm = (major: majorRequest) => {
+  dialogTitle = "修改信息";
+  addMajForm.id = major.id;
+  addMajForm.name = major.name;
+  addMajVisible.value = true;
+};
 let closeDialog = () => {
   addMajForm.id = null;
   addMajForm.name = "";
+  dialogTitle = "添加专业";
 };
 </script>
 <style lang="less" scoped></style>

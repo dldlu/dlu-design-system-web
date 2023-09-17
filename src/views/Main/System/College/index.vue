@@ -9,14 +9,7 @@
           :value="item.id"
         />
       </el-select>
-      <el-button
-        @click="
-          () => {
-            addColVisible = true;
-          }
-        "
-        >添加学院</el-button
-      >
+      <el-button @click="addColVisible = true">添加学院</el-button>
     </div>
     <div class="tableBody">
       <el-table :data="colleges.array" stripe style="margin-top: 20px" max-height="500">
@@ -32,7 +25,12 @@
         <el-table-column label="学院信息" min-width="150">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-button
+                type="warning"
+                size="small"
+                @click="changeForm(colleges.array[scope.$index])"
+                >修改信息</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -96,12 +94,19 @@ import { collegeRequest, delCollege, postCollege } from "@/service/info/college.
 import MyPagination from "@/components/MyPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
+type addColForm = {
+  id: null | number;
+  name: string;
+  is_delete: number;
+};
+
 const store = useStore();
+let dialogTitle = "添加学院";
 let pageRef = ref();
 let schoolId = ref<number>(27);
 let addColVisible = ref<boolean>(false);
 let addColFormRef = ref<FormInstance>();
-let addColForm = reactive({
+let addColForm = reactive<addColForm>({
   id: null,
   name: "",
   is_delete: 0,
@@ -131,9 +136,8 @@ let sendAddCol = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const form = toRaw(addColForm);
-      let res = await postCollege(form as collegeRequest);
-      console.log(res);
+      const form = toRaw(addColForm) as collegeRequest;
+      let res = dialogTitle === "添加学院" ? await postCollege(form) : await postCollege(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         pageRef.value.comGetData();
@@ -161,7 +165,14 @@ let changeIsDelete = async (collegeId: number, index: number) => {
       store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
   }
 };
+let changeForm = (college: collegeRequest) => {
+  dialogTitle = "修改信息";
+  addColForm.id = college.id;
+  addColForm.name = college.name;
+  addColVisible.value = true;
+};
 let closeDialog = () => {
+  dialogTitle = "添加学院";
   addColForm.id = null;
   addColForm.name = "";
 };

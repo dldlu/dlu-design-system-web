@@ -18,7 +18,12 @@
         <el-table-column label="学校信息" min-width="150">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-button
+                type="warning"
+                size="small"
+                @click="changeForm(schools.array[scope.$index])"
+                >修改信息</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -43,7 +48,7 @@
   </div>
   <el-dialog
     v-model="addSchVisible"
-    title="添加学校"
+    :title="dialogTitle"
     width="35%"
     style="border-radius: 15px"
     @close="closeDialog"
@@ -78,19 +83,25 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
-import { addRole } from "@/service/user/userRole.ts";
+import { computed, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { delSchool, postSchool, schoolRequest } from "@/service/info/school.ts";
+import { delSchool, postSchool, putSchool, schoolRequest } from "@/service/info/school.ts";
 import MyPagination from "@/components/MyPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
+type addSchForm = {
+  id: null | number;
+  name: string;
+  address: string;
+};
+
 const store = useStore();
+let dialogTitle = "添加学校";
 let pageRef = ref();
 let addSchVisible = ref<boolean>(false);
 let addSchFormRef = ref<FormInstance>();
-let addSchForm = reactive({
+let addSchForm = reactive<addSchForm>({
   id: null,
   name: "",
   address: "",
@@ -119,8 +130,8 @@ let sendAddSch = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const form = toRaw(addSchForm);
-      let res = await postSchool(form as schoolRequest);
+      const form = toRaw(addSchForm) as schoolRequest;
+      let res = dialogTitle === "添加学校" ? await postSchool(form) : await putSchool(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         pageRef.value.comGetData();
@@ -148,7 +159,15 @@ let changeIsDelete = async (schoolId: number, index: number) => {
       store.state.baseInfo.schools.array[index].is_delete === 0 ? 1 : 0;
   }
 };
+let changeForm = (school: schoolRequest) => {
+  dialogTitle = "修改信息";
+  addSchForm.address = school.address;
+  addSchForm.id = school.id;
+  addSchForm.name = school.name;
+  addSchVisible.value = true;
+};
 let closeDialog = () => {
+  dialogTitle = "添加学校";
   addSchForm.id = null;
   addSchForm.name = "";
 };

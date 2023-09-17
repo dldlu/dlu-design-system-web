@@ -17,7 +17,9 @@
         <el-table-column label="角色信息" min-width="150">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-button type="warning" size="small" @click="changeForm(roles[scope.$index])"
+                >修改信息</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -39,7 +41,7 @@
   </div>
   <el-dialog
     v-model="addRoleVisible"
-    title="添加角色"
+    :title="dialogTitle"
     width="35%"
     style="border-radius: 15px"
     @close="closeDialog"
@@ -69,14 +71,16 @@
 <script lang="ts" setup>
 import { useStore } from "vuex";
 import { computed, onMounted, reactive, ref, toRaw } from "vue";
-import { addRole, deleteRole } from "@/service/user/userRole.ts";
+import { addRole, changeRole, deleteRole, roleRes } from "@/service/user/userRole.ts";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 
 const store = useStore();
+let dialogTitle = "添加角色";
 let addRoleVisible = ref<boolean>(false);
 let addRoleFormRef = ref<FormInstance>();
 let addRoleForm = reactive({
+  id: NaN,
   name: "",
 });
 let addRoleFormRules = reactive<FormRules>({
@@ -93,8 +97,14 @@ let sendAddRole = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const form = toRaw(addRoleForm);
-      let res = await addRole(form);
+      let res;
+      if (dialogTitle === "添加角色") {
+        const form = { name: addRoleForm.name };
+        res = await addRole(form);
+      } else {
+        const form = toRaw(addRoleForm);
+        res = await changeRole(form);
+      }
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         await store.dispatch("baseInfo/getRoles");
@@ -122,8 +132,15 @@ let changeIsDelete = async (roleId: string, index: number) => {
       store.state.baseInfo.roles[index].is_delete === 0 ? 1 : 0;
   }
 };
+let changeForm = (role: roleRes) => {
+  dialogTitle = "修改信息";
+  addRoleForm.id = role.id;
+  addRoleForm.name = role.name;
+  addRoleVisible.value = true;
+};
 let closeDialog = () => {
   addRoleForm.name = "";
+  dialogTitle = "添加角色";
 };
 onMounted(() => {
   store.dispatch("baseInfo/getRoles");

@@ -31,7 +31,12 @@
         <el-table-column label="班级信息" min-width="150">
           <template #default="scope">
             <div>
-              <el-button type="warning" size="small">修改信息</el-button>
+              <el-button
+                type="warning"
+                size="small"
+                @click="changeForm(classes.array[scope.$index])"
+                >修改信息</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -56,7 +61,7 @@
   </div>
   <el-dialog
     v-model="addClaVisible"
-    title="添加班级"
+    :title="dialogTitle"
     width="35%"
     style="border-radius: 15px"
     @close="closeDialog"
@@ -92,18 +97,26 @@ import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
-import { classRequest, delClass, postClass } from "@/service/info/class.ts";
+import { classRequest, delClass, postClass, putClass } from "@/service/info/class.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
 import MyPagination from "@/components/MyPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
+type addClaForm = {
+  id: null | number;
+  name: string;
+  major_id: number;
+  grade: number;
+};
+
 const store = useStore();
+let dialogTitle = "添加班级";
 let pageRef = ref();
 let college_id = ref<number>(42);
 let addClaVisible = ref<boolean>(false);
 let addClaFormRef = ref<FormInstance>();
-let addClaForm = reactive({
+let addClaForm = reactive<addClaForm>({
   id: null,
   name: "",
   major_id: 4208,
@@ -140,8 +153,9 @@ let sendAddCla = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
-      const form = toRaw(addClaForm);
-      let res = await postClass(form as classRequest);
+      const form = toRaw(addClaForm) as classRequest;
+      console.log(form);
+      let res = dialogTitle === "添加班级" ? await postClass(form) : await putClass(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
         pageRef.value.comGetData();
@@ -169,7 +183,16 @@ let changeIsDelete = async (classId: number, index: number) => {
       store.state.baseInfo.colleges.array[index].is_delete === 0 ? 1 : 0;
   }
 };
+let changeForm = (Cla: classRequest) => {
+  dialogTitle = "修改信息";
+  addClaForm.id = Cla.id;
+  addClaForm.name = Cla.name;
+  addClaForm.major_id = Cla.major_id;
+  addClaForm.grade = Cla.grade;
+  addClaVisible.value = true;
+};
 let closeDialog = () => {
+  dialogTitle = "添加班级";
   addClaForm.id = null;
   addClaForm.name = "";
 };
