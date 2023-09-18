@@ -13,12 +13,14 @@ export const asyncRouterMap = [
         path: "user",
         component: () => import("@/views/Main/System/User/index.vue"),
         meta: { title: "用户管理", role: 1 },
-      },
-      {
-        name: "manager",
-        path: "manager",
-        component: () => import("@/views/Main/System/Manager/index.vue"),
-        meta: { title: "管理员名单", role: 1 },
+        children: [
+          {
+            name: "manager",
+            path: "manager",
+            component: () => import("@/views/Main/System/Manager/index.vue"),
+            meta: { title: "管理员名单", role: 1 },
+          },
+        ],
       },
       {
         name: "role",
