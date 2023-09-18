@@ -1,14 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-select v-model="addClaForm.grade" style="width: 140px; margin-right: 10px">
-        <el-option
-          v-for="item in grades"
-          :key="item.value"
-          :label="item.value"
-          :value="item.value"
-        />
-      </el-select>
+      <year-select v-model:grade="addClaForm.grade" />
       <college-select v-model:college_id="college_id" style="width: 140px; margin-right: 10px" />
       <major-select
         v-model:major_id="addClaForm.major_id"
@@ -102,6 +95,7 @@ import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
 import MyPagination from "@/components/MyPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
+import YearSelect from "@/components/yearSelect.vue";
 
 type addClaForm = {
   id: null | number;
@@ -154,7 +148,6 @@ let sendAddCla = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       const form = toRaw(addClaForm) as classRequest;
-      console.log(form);
       let res = dialogTitle === "添加班级" ? await postClass(form) : await putClass(form);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
@@ -196,22 +189,5 @@ let closeDialog = () => {
   addClaForm.id = null;
   addClaForm.name = "";
 };
-/**
- * @description:获取年份
- * @return {*}
- */
-let getGrades = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  addClaForm.grade = year;
-  for (let i = 0; i < 5; i++) {
-    grades.push({
-      value: year - i,
-    });
-  }
-};
-onMounted(() => {
-  getGrades();
-});
 </script>
 <style lang="less" scoped></style>

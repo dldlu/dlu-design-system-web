@@ -1,4 +1,5 @@
 import { requests } from "@/service/axios.ts";
+import { pageData } from "@/service/type.ts";
 
 export interface subjectInfo {
   first_teacher_id: number;
@@ -15,5 +16,11 @@ export interface subjectInfo {
   subject_id: number;
 }
 
-export const getSelfSubject = (year: number) =>
-  requests.get<subjectInfo[]>(`/subject/selfsubject/${year}`);
+export interface subjectBody {
+  year: number;
+  size: number;
+  num: number;
+}
+
+export const getSelfSubject = (body: subjectBody) =>
+  requests.get<pageData<subjectInfo>>(`/subject/selfsubject/${body.year}/${body.size}/${body.num}`);

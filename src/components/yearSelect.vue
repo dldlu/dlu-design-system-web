@@ -22,12 +22,14 @@ const emit = defineEmits(["update:grade"]);
 const grades = reactive([]);
 let getGrades = () => {
   const now = new Date();
-  const year = 2019;
+  const year = now.getFullYear();
   emit("update:grade", year);
-  for (let i = 0; i < 5; i++) {
+  let i = 0;
+  while (year - i !== 2018) {
     grades.push({
       value: year - i,
     });
+    i++;
   }
 };
 onMounted(() => {

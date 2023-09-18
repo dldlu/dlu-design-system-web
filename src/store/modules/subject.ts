@@ -1,14 +1,15 @@
-import { getSelfSubject, subjectInfo } from "@/service/subject/self.ts";
+import { getSelfSubject, subjectBody, subjectInfo } from "@/service/subject/self.ts";
+import { pageData } from "@/service/type.ts";
 
 interface SubjectState {
-  selfSubject: subjectInfo[];
+  selfSubject: pageData<subjectInfo>;
 }
 
 export default {
   namespaced: true,
   state(): SubjectState {
     return {
-      selfSubject: [],
+      selfSubject: {} as pageData<subjectInfo>,
     };
   },
   mutations: {
@@ -17,10 +18,9 @@ export default {
     },
   },
   actions: {
-    async getSelfSubjectAction({ commit }: any, data: number) {
+    async getSelfSubjectAction({ commit }: any, data: subjectBody) {
       try {
         let result = await getSelfSubject(data);
-        console.log(result);
         commit("setSelfSubject", { selfSubject: result.data });
         return result;
       } catch (error: any) {

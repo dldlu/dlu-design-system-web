@@ -1,5 +1,9 @@
 <template>
-  <el-menu :default-active="route.path.substring(route.path.indexOf('/'))" @select="turn">
+  <el-menu
+    :default-active="route.path.substring(route.path.indexOf('/'))"
+    @select="turn"
+    unique-opened
+  >
     <el-sub-menu index="system">
       <template #title>
         <img src="../assets/md-room@1x.png" />
