@@ -74,6 +74,20 @@ export const asyncRouterMap = [
         path: "approval",
         component: () => import("@/views/Main/Paper/Approval/index.vue"),
         meta: { title: "题目审批表", role: 1 },
+        children: [
+          {
+            name: "approve",
+            path: "approve",
+            component: () => import("@/views/Main/Paper/Approval/approve.vue"),
+            meta: { title: "题目审批表审批", role: 1 },
+          },
+          {
+            name: "appointManage",
+            path: "appointManage",
+            component: () => import("@/views/Main/Paper/Approval/approve.vue"),
+            meta: { title: "题目审批表审批", role: 1 },
+          },
+        ],
       },
     ],
   },

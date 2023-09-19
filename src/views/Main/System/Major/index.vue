@@ -1,10 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <college-select
-        v-model:college_id="addMajForm.college_id"
-        style="width: 140px; margin-right: 10px"
-      />
+      <college-select v-model:college_id="addMajForm.college_id" class="select140" />
       <el-button @click="addMajVisible = true">添加专业</el-button>
     </div>
     <div class="tableBody">

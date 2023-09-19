@@ -6,7 +6,6 @@
         $emit('update:grade', val);
       }
     "
-    style="width: 140px; margin-right: 10px"
   >
     <el-option v-for="item in grades" :key="item.value" :label="item.value" :value="item.value" />
   </el-select>

@@ -12,7 +12,7 @@
           size="default"
         />
       </div>
-      <el-select v-model="logParams.stateId" style="width: 140px; margin-right: 10px">
+      <el-select v-model="logParams.stateId" class="select140">
         <el-option
           v-for="item in stateOptions"
           :key="item.id"

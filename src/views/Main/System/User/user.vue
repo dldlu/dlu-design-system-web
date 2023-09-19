@@ -186,7 +186,7 @@ const show = (type, index = 0) => {
   } else if (type === 1) {
     addTchRef.value.showForm();
   } else {
-    currentInfo.value = store.state.baseInfo.users.array[user];
+    currentInfo.value = store.state.baseInfo.users.array[index];
     if (is_Stu.value === 1) {
       changeStuRef.value.showForm();
     } else {
@@ -263,8 +263,8 @@ const changeIsDelete = async (userId: number, index: number) => {
     ElMessage.success(res.status_msg);
   } else {
     ElMessage.error(res.status_msg);
-    store.state.baseInfo.users.array[user].is_delete =
-      store.state.baseInfo.users.array[user].is_delete === 0 ? 1 : 0;
+    store.state.baseInfo.users.array[index].is_delete =
+      store.state.baseInfo.users.array[index].is_delete === 0 ? 1 : 0;
   }
 };
 

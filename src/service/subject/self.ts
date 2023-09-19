@@ -14,6 +14,7 @@ export interface subjectInfo {
   student_number: string;
   student_phone: string;
   subject_id: number;
+  serial_number: string;
 }
 
 export interface subjectBody {

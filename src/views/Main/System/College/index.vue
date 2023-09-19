@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-select v-model="schoolId" style="width: 140px; margin-right: 10px">
+      <el-select v-model="schoolId" class="select140">
         <el-option
           v-for="item in schools.array"
           :key="item.id"

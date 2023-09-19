@@ -1,12 +1,12 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <year-select v-model:grade="addClaForm.grade" />
-      <college-select v-model:college_id="college_id" style="width: 140px; margin-right: 10px" />
+      <year-select v-model:grade="addClaForm.grade" class="select100" />
+      <college-select v-model:college_id="college_id" class="select140" />
       <major-select
         v-model:major_id="addClaForm.major_id"
         :college_id="college_id"
-        style="width: 140px; margin-right: 10px"
+        class="select140"
       />
       <el-button @click="addClaVisible = true">添加班级</el-button>
     </div>
