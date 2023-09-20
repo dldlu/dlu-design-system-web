@@ -14,7 +14,7 @@ declare module '@vue/runtime-core' {
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
-    ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    ElDatePicker: typeof import("element-plus/es")["ElDatePicker"]
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
@@ -35,7 +35,7 @@ declare module '@vue/runtime-core' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    ElTag: typeof import('element-plus/es')['ElTag']
+    ElTag: typeof import("element-plus/es")["ElTag"]
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     MajorSelect: typeof import('./src/components/majorSelect.vue')['default']
     MyBreadcrumb: typeof import('./src/components/MyBreadcrumb.vue')['default']
@@ -44,6 +44,7 @@ declare module '@vue/runtime-core' {
     MyPagination: typeof import('./src/components/MyPagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TeacherSelect: typeof import('./src/components/teacherSelect.vue')['default']
     YearSelect: typeof import('./src/components/yearSelect.vue')['default']
   }
 }

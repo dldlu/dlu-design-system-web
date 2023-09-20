@@ -2,20 +2,13 @@
   <div class="table">
     <div class="tableHeader">
       <el-button @click="genSerialFunc">生成归档序号</el-button>
-      <el-button style="margin-right: 10px">委托管理</el-button>
+      <el-button @click="turnPage('appointManage')" style="margin-right: 10px">委托管理</el-button>
       <year-select v-model:grade="approvalGrade" class="select100" />
-      <el-select :model-value="number" class="select100">
-        <el-option
-          v-for="item in grades"
-          :key="item.value"
-          :label="item.value"
-          :value="item.value"
-        />
-      </el-select>
       <college-select v-model:college_id="college_id" class="select140" />
       <major-select v-model:major_id="major_id" :college_id="college_id" class="select140" />
+      <teacher-select v-model:teacher_id="teacher_id" :major_id="major_id" class="select100" />
       <el-input v-model="number" placeholder="按老师工号或姓名查询" class="select140" />
-      <el-button>查询</el-button>
+      <el-button @click="query">查询</el-button>
       <el-button>下载论文封皮</el-button>
       <el-button>下载统计表</el-button>
     </div>
@@ -24,7 +17,7 @@
         <el-table-column min-width="100">
           <template #default="scope">
             <div>
-              {{ scope.$index + 1 }}
+              <el-checkbox :true-label="0" :false-label="1" @change="" size="small" />
             </div>
           </template>
         </el-table-column>
@@ -33,6 +26,7 @@
           <template #default="scope">
             <el-tooltip placement="bottom-start" effect="light">
               <template #content>
+                职位:{{ approveList.array[scope.$index].first_teacher_title_name }}<br />
                 手机号:{{ approveList.array[scope.$index].first_teacher_phone }}
               </template>
               {{ approveList.array[scope.$index].first_teacher_name }}
@@ -84,25 +78,37 @@ import { pageBody } from "@/store/modules/baseInfo.ts";
 import { approveListRequest } from "@/service/subject/approve.ts";
 import { genSerial, serialRequest } from "@/service/subject/apply.ts";
 import { ElMessage } from "element-plus";
+import { useRouter } from "vue-router";
+import TeacherSelect from "@/components/teacherSelect.vue";
 const store = useStore();
+const router = useRouter();
 let pageRef = ref<any>();
 let approvalGrade = ref<number>(0);
 let college_id = ref<number>(42);
-let major_id = ref<number>(4208);
+let major_id = ref<number>(4205);
+let teacher_id = ref<string>("");
 let number = ref<string>("");
+let condition = "";
 let approveList = computed(() => {
   return store.state.subject.approveList;
 });
 watch([major_id, college_id, approvalGrade], () => {
-  pageRef.value.reset();
-  pageRef.value.comGetData();
+  query();
+});
+watch(teacher_id, () => {
+  number.value = teacher_id.value;
+  condition = number.value;
+  query();
+});
+watch(number, () => {
+  condition = number.value;
 });
 const getData = (pageParams: pageBody) => {
   const params: approveListRequest = JSON.parse(JSON.stringify(pageParams));
   params.year = approvalGrade.value;
   params.collegeId = college_id.value;
   params.majorId = major_id.value;
-  params.condition = "";
+  params.condition = condition;
   store.dispatch("subject/getApproveListAction", params);
 };
 const genSerialFunc = async () => {
@@ -116,6 +122,13 @@ const genSerialFunc = async () => {
   } else {
     ElMessage.error(result.status_msg);
   }
+};
+const turnPage = (name) => {
+  router.push({ name });
+};
+const query = () => {
+  pageRef.value.reset();
+  pageRef.value.comGetData();
 };
 </script>
 
