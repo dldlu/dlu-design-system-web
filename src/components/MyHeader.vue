@@ -4,8 +4,8 @@
     <div class="font user">
       <el-dropdown>
         <span style="outline: none !important">
-          你好,<span class="name">{{ userName }}</span
-          >{{ type }}
+          你好,<span class="name">{{ userInfo.name }}</span
+          >{{ userInfo.role_id === 1 ? "" : "老师" }}
           <el-icon>
             <arrow-down />
           </el-icon>
@@ -23,9 +23,13 @@
 <script lang="ts" setup>
 import { ArrowDown } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { computed } from "vue";
 const router = useRouter();
-const userName = "邱少明";
-const type = "老师";
+const store = useStore();
+const userInfo = computed(() => {
+  return store.state.user.userDesc;
+});
 const logOut = () => {
   localStorage.removeItem("TOKEN");
   router.push({ name: "login" });

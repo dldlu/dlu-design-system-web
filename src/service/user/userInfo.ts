@@ -23,8 +23,8 @@ export interface userDesc {
   is_delete: number;
 }
 
-export const queryUserById = (id: string, isStu: number) =>
-  requests.get<userDesc>(`/user/info/id/${id}/${isStu}`);
+export const queryUserById = (id: number, isStu: 2 | 1) =>
+  requests.get<userDesc>(`/user/info/${id}/${isStu}`);
 
 export const queryUserByNumber = (number: string, isStu: number) =>
   requests.get<userDesc>(`/user/info/number/${number}/${isStu}`);

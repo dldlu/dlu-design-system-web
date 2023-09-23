@@ -90,6 +90,9 @@ export default {
       const is_stu = localStorage.getItem("IsStu");
       let result = await queryUserByNumber(number as string, Number(is_stu));
       if (result.status_code === 10000) {
+        if (!result.data["role_id"]) {
+          result.data["role_id"] = 1;
+        }
         commit("setUserDesc", result.data);
       } else {
         localStorage.removeItem("TOKEN");

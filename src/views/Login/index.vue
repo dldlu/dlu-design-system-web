@@ -48,6 +48,11 @@ const Login = async () => {
   const { number, password } = form;
   const res = await store.dispatch("user/userLogin", { number, password });
   if (res.status_code === 10000) {
+    await store.dispatch("user/getUserDesc");
+    await store.dispatch("user/GenerateRoutes", store.state.user.userDesc.role_id);
+    await store.state.user.addRouters.forEach((x: any) => {
+      router.addRoute(x);
+    }); // 动态添加可访问路由表
     ElMessage.success(res.status_msg);
     await router.push("/system");
   } else {

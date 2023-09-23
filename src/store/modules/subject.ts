@@ -1,6 +1,7 @@
 import { getSelfSubject, subjectBody, subjectInfo } from "@/service/subject/self.ts";
 import { pageData } from "@/service/type.ts";
 import { approveListRequest, postApprovelist } from "@/service/subject/approve.ts";
+import { getSelfAppoint } from "@/service/subject/appoint.ts";
 
 interface SubjectState {
   selfSubject: pageData<subjectInfo>;
@@ -36,6 +37,15 @@ export default {
     async getApproveListAction({ commit }: any, data: approveListRequest) {
       try {
         let result = await postApprovelist(data);
+        commit("setApproveList", { approveList: result.data });
+        return result;
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getAppointListAction({ commit }: any, data: subjectBody) {
+      try {
+        let result = await getSelfAppoint(data);
         commit("setApproveList", { approveList: result.data });
         return result;
       } catch (error: any) {

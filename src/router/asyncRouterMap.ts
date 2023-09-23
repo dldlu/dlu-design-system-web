@@ -85,7 +85,13 @@ export const asyncRouterMap = [
             name: "appointManage",
             path: "appointManage",
             component: () => import("@/views/Main/Paper/Approval/approve.vue"),
-            meta: { title: "题目审批表审批", role: 1 },
+            meta: { title: "委托设置", role: 1 },
+          },
+          {
+            name: "myAppoint",
+            path: "myAppoint",
+            component: () => import("@/views/Main/Paper/Approval/approve.vue"),
+            meta: { title: "我的委托", role: 1 },
           },
         ],
       },
@@ -98,6 +104,6 @@ export const asyncRouterMap = [
   },
   {
     path: "/:pathMatch(.*)",
-    redirect: "/404",
+    redirect: "/system",
   },
 ];
