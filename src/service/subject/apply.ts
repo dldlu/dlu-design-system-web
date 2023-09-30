@@ -1,4 +1,5 @@
 import { requests } from "@/service/axios";
+import { approveRequest } from "@/service/subject/approve.ts";
 
 export interface applyRequest {
   abstract: string;
@@ -47,6 +48,8 @@ export interface SubjectDetail {
   student_number: string;
   type_id: number;
   type_name: string;
+  subject_college_id: number;
+  year: number;
 }
 
 export interface serialRequest {
@@ -63,6 +66,7 @@ export interface originType {
   name: string;
   is_delete: number;
 }
+
 //apply
 export const postApply = (data: applyRequest) => requests.post(`/subject/apply`, data);
 
@@ -78,3 +82,6 @@ export const getSubjectOrigins = () => requests.get<originType[]>("/subject/appl
 
 export const getSubjectDetail = (subjectId: number) =>
   requests.get<SubjectDetail>(`/subject/apply/${subjectId}`);
+
+export const subjectApprove = (data: approveRequest) =>
+  requests.post<null>("/subject/apply/approve/", data);

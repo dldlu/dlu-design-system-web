@@ -12,8 +12,16 @@ export default {
   namespaced: true,
   state(): SubjectState {
     return {
-      selfSubject: {} as pageData<subjectInfo>,
-      approveList: {} as pageData<subjectInfo>,
+      selfSubject: {
+        array: [],
+        item_total: 0,
+        page_total: 0,
+      },
+      approveList: {
+        array: [],
+        item_total: 0,
+        page_total: 0,
+      },
     };
   },
   mutations: {
@@ -28,7 +36,9 @@ export default {
     async getSelfSubjectAction({ commit }: any, data: subjectBody) {
       try {
         let result = await getSelfSubject(data);
-        commit("setSelfSubject", { selfSubject: result.data });
+        if (result.data) {
+          commit("setSelfSubject", { selfSubject: result.data });
+        }
         return result;
       } catch (error: any) {
         return error.response.data;
@@ -37,7 +47,9 @@ export default {
     async getApproveListAction({ commit }: any, data: approveListRequest) {
       try {
         let result = await postApprovelist(data);
-        commit("setApproveList", { approveList: result.data });
+        if (result.data) {
+          commit("setApproveList", { approveList: result.data });
+        }
         return result;
       } catch (error: any) {
         return error.response.data;
@@ -46,7 +58,9 @@ export default {
     async getAppointListAction({ commit }: any, data: subjectBody) {
       try {
         let result = await getSelfAppoint(data);
-        commit("setApproveList", { approveList: result.data });
+        if (result.data) {
+          commit("setApproveList", { approveList: result.data });
+        }
         return result;
       } catch (error: any) {
         return error.response.data;

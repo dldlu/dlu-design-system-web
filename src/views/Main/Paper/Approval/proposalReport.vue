@@ -45,7 +45,7 @@
         </div>
         <el-form-item label="题目分配给" prop="major_id">
           <el-checkbox-group
-            v-if="userInfo.role_id > 1 && props.type === 1"
+            v-if="userInfo.role_id > 1 && props.type !== 3"
             v-model="formData.major_id"
           >
             <el-checkbox
@@ -65,7 +65,8 @@
           <el-form-item label="学生学号" prop="student_number" style="margin-bottom: 0">
             <el-input
               v-model="formData.student_number"
-              :disabled="props.type === 1 || props.type === 3"
+              :disabled="props.type !== 2"
+              @blur="getStudentInfo(formData.student_number)"
               style="width: 100px"
             />
           </el-form-item>
@@ -174,12 +175,14 @@ import {
   postApply,
   putApply,
 } from "@/service/subject/apply.ts";
-import { addUser, changeUserInfo } from "@/service/user/userManage.ts";
-import { queryUserById } from "@/service/user/userInfo.ts";
-import { subjectInfo } from "@/service/subject/self.ts";
+import {
+  queryUserById,
+  queryUserByNumber,
+  queryUserByNumberMajor,
+} from "@/service/user/userInfo.ts";
 interface Props {
   title: string;
-  type: number; //1为报题 2为修改 3为查看
+  type: number; //1为报题 2为强修改 3为查看 4为弱修改
   subjectId: number;
 }
 const store = useStore();
@@ -207,8 +210,8 @@ let formVisible = ref<boolean>(false);
 let formRef = ref<any>();
 let formData = reactive<any>({
   headline: "",
-  first_teacher_id: null,
-  second_teacher_id: null,
+  first_teacher_id: 0,
+  second_teacher_id: 0,
   student_number: "",
   student_id: null,
   progress_id: 1,
@@ -222,6 +225,7 @@ let formData = reactive<any>({
   type_id: null,
   origin_id: null,
   need_total: 0,
+  year: null,
   is_delete: 0,
 });
 
@@ -269,25 +273,12 @@ watch(
     }
   },
 );
-watch(
-  () => formData.student_id,
-  async (value) => {
-    let res = await queryUserById(value, 1);
-    if (res.status_code === 10000) {
-      ElMessage.success(res.status_msg);
-      studentInfo.student_name = res.data.name;
-      studentInfo.student_major_name = res.data.major_name;
-      studentInfo.student_class_name = res.data.class_name as string;
-    } else {
-      ElMessage.error(res.status_msg);
-    }
-  },
-);
 const userInfo = computed(() => {
   return store.state.user.userDesc;
 });
-const getMajors = async () => {
-  let result = await getMajorsCollege(store.state.user.userDesc.college_id, 0, 0);
+const getMajors = async (id) => {
+  console.log(id);
+  let result = await getMajorsCollege(id, 0, 0);
   if (result.status_code === 10000) {
     data.majors = result.data.array;
   } else {
@@ -310,12 +301,28 @@ const getOrigins = async () => {
     ElMessage.error(result.status_msg);
   }
 };
+const getStudentInfo = async (number) => {
+  let res = await queryUserByNumber(number, 1, 2);
+  if (res.status_code === 10000) {
+    console.log(res.data);
+    ElMessage.success(res.status_msg);
+    formData.student_id = res.data.id;
+    studentInfo.student_name = res.data.name;
+    studentInfo.student_major_name = res.data.major_name;
+    studentInfo.student_class_name = res.data.class_name as string;
+  } else {
+    ElMessage.error(res.status_msg);
+    formData.student_id = null;
+    studentInfo.student_name = "";
+    studentInfo.student_major_name = "";
+    studentInfo.student_class_name = "";
+  }
+};
 const sendRequest = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       const body = JSON.parse(JSON.stringify(formData));
-      body["year"] = new Date().getFullYear();
       if (store.state.user.userDesc.role_id > 1) {
         body.major_id = body.major_id.map((item) => {
           let id;
@@ -332,6 +339,7 @@ const sendRequest = async (formEl: FormInstance | undefined) => {
       if (props.type === 1) {
         res = await postApply(body);
       } else {
+        body["id"] = props.subjectId;
         res = await putApply(body);
       }
       if (res.status_code === 10000) {
@@ -367,6 +375,7 @@ const changeData = async () => {
     let info = res.data;
     formData.headline = info.headline;
     formData.major_id = info.select_major_name;
+    formData.college_id = info.subject_college_id;
     formData.necessity = info.necessity;
     formData.abstract = info.abstract;
     formData.feasibility = info.feasibility;
@@ -377,6 +386,7 @@ const changeData = async () => {
     formData.first_teacher_id = info.first_teacher_id;
     formData.type_id = info.type_id;
     formData.origin_id = info.origin_id;
+    formData.year = info.year;
     teacherInfo.teacher_name = info.first_teacher_name;
     teacherInfo.teacher_title_name = info.first_teacher_title_name;
     teacherInfo.teacher_major_name = info.first_teacher_major_name;
@@ -384,25 +394,32 @@ const changeData = async () => {
     studentInfo.student_name = info.student_name;
     studentInfo.student_class_name = info.student_class_name;
     studentInfo.student_major_name = info.student_major_name;
-    data.major_names = info.select_major_name;
+    if (props.type !== 3) {
+      await getMajors(info.subject_college_id);
+    } else {
+      data.major_names = info.select_major_name;
+    }
   } else {
     ElMessage.error(res.status_msg);
   }
 };
-const onOpen = () => {
-  if (props.type === 3) {
-    changeData();
+const onOpen = async () => {
+  if (props.type !== 1) {
+    await changeData();
+  } else {
+    formData.year = new Date().getFullYear();
+    applyData();
+    await getMajors(store.state.user.userDesc.college_id);
+    if (store.state.user.userDesc.role_id === 1) {
+      await getStudentInfo(store.state.user.userDesc.number);
+    }
   }
 };
 
 defineExpose({ showForm });
 onMounted(() => {
-  getMajors();
   getTypes();
   getOrigins();
-  if (props.type === 1) {
-    applyData();
-  }
 });
 </script>
 

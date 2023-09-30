@@ -11,7 +11,7 @@ export interface approveListRequest {
 }
 
 export interface approveRequest {
-  subjectIds: string[];
+  subjectIds: number[];
 }
 
 //approve

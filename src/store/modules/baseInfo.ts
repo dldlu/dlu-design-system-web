@@ -154,9 +154,9 @@ export default {
         return error.response.data;
       }
     },
-    async getUserByNumber({ commit }: any, data: { number: string; isStu: number }) {
+    async getUserByNumber({ commit }: any, data: { number: string; isStu: 1 | 2 }) {
       try {
-        let result = await queryUserByNumber(data.number, data.isStu);
+        let result = await queryUserByNumber(data.number, data.isStu, 1);
         if (result.data !== null) {
           commit("setUsers", {
             users: {
@@ -179,7 +179,7 @@ export default {
         return error.response.data;
       }
     },
-    async getUserByMajor({ commit }: any, data: pageBody & { majorId: number; isStu: number }) {
+    async getUserByMajor({ commit }: any, data: pageBody & { majorId: number; isStu: 1 | 2 }) {
       try {
         let result = await queryUserbyMajor(data.majorId, data.isStu, data.size, data.num);
         if (result.data !== null) {

@@ -52,7 +52,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="subject_id" label="ID" min-width="50" />
-        <el-table-column prop="headline" label="论文题目" min-width="300" />
+        <el-table-column prop="headline" label="论文题目" min-width="300">
+          <template #default="scope">
+            <div @click="showDetail(approveList.array[scope.$index].subject_id, 3)">
+              {{ approveList.array[scope.$index].headline }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="第一指导教师姓名" min-width="150">
           <template #default="scope">
             <el-tooltip placement="bottom-start" effect="light">
@@ -108,7 +114,13 @@
                   <el-button size="small" type="danger">删除</el-button>
                 </template>
               </el-popconfirm>
-              <el-button size="small" type="warning">修改</el-button>
+              <el-button
+                size="small"
+                type="warning"
+                :disabled="approveList.array[scope.$index].progress_id !== 1"
+                @click="showDetail(approveList.array[scope.$index].subject_id, 2)"
+                >修改</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -117,7 +129,7 @@
             <el-button
               size="small"
               type="primary"
-              :disabled="approveList.array === null"
+              :disabled="approveList.array.length === 0"
               @click="showBulkTable"
               >批量委托</el-button
             >
@@ -180,7 +192,8 @@
             :model-value="currentProgress >= 2"
             label="同意"
             border
-            :disabled="currentProgress !== 1"
+            @change="sendApproveReq"
+            :disabled="majorApprove"
           />
         </el-form-item>
         <el-form-item label="院学术委员会审核:" label-width="140px">
@@ -188,7 +201,8 @@
             :model-value="currentProgress >= 3"
             label="同意"
             border
-            :disabled="currentProgress !== 2"
+            @change="sendApproveReq"
+            :disabled="collegeApprove"
           />
         </el-form-item>
         <el-form-item label="提交修改意见:" label-width="140px">
@@ -202,6 +216,13 @@
       </span>
     </template>
   </el-dialog>
+  <proposal-report
+    title="题目详情"
+    :type="detailType"
+    :subjectId="currentSubjectId"
+    @getNewData="getNewData"
+    ref="detailRef"
+  />
 </template>
 
 <script setup lang="ts">
@@ -212,25 +233,27 @@ import MajorSelect from "@/components/majorSelect.vue";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";
-import { approveListRequest } from "@/service/subject/approve.ts";
-import { delApply, genSerial, serialRequest } from "@/service/subject/apply.ts";
+import { approveListRequest, approveRequest } from "@/service/subject/approve.ts";
+import { delApply, genSerial, serialRequest, subjectApprove } from "@/service/subject/apply.ts";
 import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import TeacherSelect from "@/components/teacherSelect.vue";
 import { appointRequest, postAppoint } from "@/service/subject/appoint.ts";
 import { subjectBody, subjectInfo } from "@/service/subject/self.ts";
+import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
 let pageRef = ref<any>();
+let detailRef = ref<any>();
+let detailType = ref<number>(3);
+let currentSubjectId = ref<number>(0);
 let approvalGrade = ref<number>(0);
 let college_id = ref<number>(42);
 let major_id = ref<number>(4205);
 let teacher_number = ref<string>("");
 let number = ref<string>("");
-let college_status = ref<boolean>(false);
-let major_status = ref<boolean>(false);
 let appointForm = reactive({
   subjectIds: [],
   number: "",
@@ -240,10 +263,15 @@ let bulkList = reactive([]);
 let allCheck = ref<boolean>(false);
 let appointTableVisible = ref<boolean>(false);
 let approveTableVisible = ref<boolean>(false);
-let condition = "";
+let majorApprove = ref(false);
+let collegeApprove = ref(false);
 let currentProgress = ref<number>(0);
+let condition = "";
 let approveList = computed(() => {
   return store.state.subject.approveList;
+});
+let userInfo = computed(() => {
+  return store.state.user.userDesc;
 });
 watch([major_id, college_id, approvalGrade], () => {
   query();
@@ -285,6 +313,9 @@ const getData = (pageParams: pageBody) => {
     store.dispatch("subject/getApproveListAction", params);
   }
 };
+const getNewData = () => {
+  pageRef.value.comGetData();
+};
 const genSerialFunc = async () => {
   let params: serialRequest;
   params = {
@@ -315,8 +346,11 @@ const delSubject = async (id) => {
   }
 };
 const showAppointTable = (subject) => {
+  majorApprove.value =
+    currentProgress.value !== 1 || ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);
+  collegeApprove.value = currentProgress.value !== 2 || store.state.user.userDesc.role_id !== 4;
   appointForm.subjectIds.push(subject.subject_id);
-  if (route.name === "approve") {
+  if (route.name === "approve" || route.name === "myAppoint") {
     approveTableVisible.value = true;
     currentProgress.value = subject.progress_id;
   } else if (route.name === "appointManage") {
@@ -324,12 +358,14 @@ const showAppointTable = (subject) => {
   }
 };
 const showBulkTable = () => {
+  majorApprove.value = ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);
+  collegeApprove.value = store.state.user.userDesc.role_id !== 4;
   bulkList.forEach((item, index) => {
     if (item) {
       appointForm.subjectIds.push(store.state.subject.approveList.array[index].subject_id);
     }
   });
-  if (route.name === "approve") {
+  if (route.name === "approve" || route.name === "myAppoint") {
     approveTableVisible.value = true;
   } else if (route.name === "appointManage") {
     appointTableVisible.value = true;
@@ -349,8 +385,28 @@ const sendAppointReq = async () => {
     ElMessage.error(result.status_msg);
   }
 };
+const sendApproveReq = async () => {
+  let params: approveRequest;
+  params = {
+    subjectIds: appointForm.subjectIds,
+  };
+  let result = await subjectApprove(params);
+  if (result.status_code === 10000) {
+    ElMessage.success(result.status_msg);
+    approveTableVisible.value = false;
+    pageRef.value.comGetData();
+  } else {
+    ElMessage.error(result.status_msg);
+  }
+};
 const tableClose = () => {
   appointForm.subjectIds.length = 0;
+  currentProgress.value = 0;
+};
+const showDetail = (id, type) => {
+  detailType.value = type;
+  currentSubjectId.value = id;
+  detailRef.value.showForm();
 };
 onUpdated(() => {
   allCheck.value = false;

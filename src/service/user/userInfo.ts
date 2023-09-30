@@ -26,14 +26,14 @@ export interface userDesc {
 export const queryUserById = (id: number, isStu: 2 | 1) =>
   requests.get<userDesc>(`/user/info/${id}/${isStu}`);
 
-export const queryUserByNumber = (number: string, isStu: number) =>
-  requests.get<userDesc>(`/user/info/number/${number}/${isStu}`);
+export const queryUserByNumber = (number: string, isStu: 2 | 1, opt: 2 | 1) =>
+  requests.get<userDesc>(`/user/info/number/${number}/${isStu}/${opt}`);
 
-export const queryUserbyMajor = (majorId: number, isStu: number, size: number, num: number) =>
+export const queryUserbyMajor = (majorId: number, isStu: 2 | 1, size: number, num: number) =>
   requests.get<userDesc>(`/user/info/major/${majorId}/${isStu}/${size}/${num}`);
 
-export const queryUserByCollege = (collegeId: number, isStu: number, size: number, num: number) =>
+export const queryUserByCollege = (collegeId: number, isStu: 2 | 1, size: number, num: number) =>
   requests.get<userDesc>(`/user/info/college/${collegeId}/${isStu}/${size}/${num}`);
 
-export const queryUserByNumberMajor = (number: string, majorId: number, isStu: number) =>
+export const queryUserByNumberMajor = (number: string, majorId: number, isStu: 2 | 1) =>
   requests.get<userDesc>(`/user/info/number/${number}/${majorId}/${isStu}`);

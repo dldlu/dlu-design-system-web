@@ -88,7 +88,7 @@ export default {
     async getUserDesc({ commit }: any) {
       const number = localStorage.getItem("Number");
       const is_stu = localStorage.getItem("IsStu");
-      let result = await queryUserByNumber(number as string, Number(is_stu));
+      let result = await queryUserByNumber(number as string, Number(is_stu) as 1 | 2, 1);
       if (result.status_code === 10000) {
         if (!result.data["role_id"]) {
           result.data["role_id"] = 1;

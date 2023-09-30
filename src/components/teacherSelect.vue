@@ -73,9 +73,9 @@ const getTeacherSelect = async () => {
   if (result.status_code === 10000) {
     let teachers = [
       {
-        id: null,
+        id: 0,
         name: "请选择",
-        number: null,
+        number: 0,
       },
     ];
     data.teachers = result.data.array ? teachers.concat(result.data.array) : teachers;

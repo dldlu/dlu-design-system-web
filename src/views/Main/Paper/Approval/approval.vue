@@ -3,7 +3,7 @@
     <div class="tableHeader">
       <year-select v-model:grade="approvalGrade" class="select100" />
       <el-button @click="turnPage('myAppoint')">我的委托</el-button>
-      <el-button @click="showForm">报题</el-button>
+      <el-button @click="showReportForm">报题</el-button>
       <el-button @click="turnPage('approve')">审阅</el-button>
     </div>
     <div class="tableBody">
@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column prop="headline" label="论文题目" min-width="300">
           <template #default="scope">
-            <div @click="showDetail(subjects.array[scope.$index].subject_id)">
+            <div @click="showDetail(subjects.array[scope.$index].subject_id, 3)">
               {{ subjects.array[scope.$index].headline }}
             </div>
           </template>
@@ -63,7 +63,13 @@
                   >
                 </template>
               </el-popconfirm>
-              <el-button size="small" type="warning">修改</el-button>
+              <el-button
+                size="small"
+                type="warning"
+                :disabled="subjects.array[scope.$index].progress_id !== 1"
+                @click="showDetail(subjects.array[scope.$index].subject_id, 4)"
+                >修改</el-button
+              >
             </div>
           </template>
         </el-table-column>
@@ -74,7 +80,12 @@
     </div>
   </div>
   <proposal-report title="题目审批表" :type="1" @getNewData="getNewData" ref="reportRef" />
-  <proposal-report title="题目详情" :type="3" :subjectId="currentSubjectId" ref="detailRef" />
+  <proposal-report
+    title="题目详情"
+    :type="detailType"
+    :subjectId="currentSubjectId"
+    ref="detailRef"
+  />
 </template>
 
 <script setup lang="ts">
@@ -93,6 +104,7 @@ const router = useRouter();
 const pageRef = ref<any>();
 const reportRef = ref<any>();
 const detailRef = ref<any>();
+const detailType = ref<number>(3);
 let approvalGrade = ref<number>(0);
 let currentSubjectId = ref<number>(0);
 let subjects = computed(() => {
@@ -105,7 +117,7 @@ watch(approvalGrade, (value, oldValue) => {
     pageRef.value.comGetData();
   }
 });
-const showForm = () => {
+const showReportForm = () => {
   reportRef.value.showForm();
 };
 const turnPage = (name) => {
@@ -129,7 +141,8 @@ const delSubject = async (id) => {
   }
 };
 
-const showDetail = (id) => {
+const showDetail = (id, type) => {
+  detailType.value = type;
   currentSubjectId.value = id;
   detailRef.value.showForm();
 };
