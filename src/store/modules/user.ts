@@ -2,7 +2,7 @@ import { asyncRouterMap } from "@/router/asyncRouterMap.ts";
 import { constantRouterMap } from "@/router/constantRouterMap.ts";
 import { checkRole, LoginBody, stuLogin, tchLogin } from "@/service/user/login.ts";
 import { queryUserByNumber, userDesc } from "@/service/user/userInfo.ts";
-
+import _ from "lodash";
 interface UserState {
   token: string | null;
   userDesc: userDesc;
@@ -44,12 +44,6 @@ export default {
     };
   },
   mutations: {
-    setIsStu(state: UserState, payload: any) {
-      state.userDesc.is_stu = payload.isStudent;
-    },
-    setNumber(state: UserState, payload: any) {
-      state.userDesc.number = payload.number;
-    },
     setUserDesc(state: UserState, payload: userDesc) {
       state.userDesc = payload;
     },
@@ -103,16 +97,14 @@ export default {
       }
       return result;
     },
-    GenerateRoutes({ commit }: any, role: number) {
-      return new Promise<void>((resolve) => {
-        const accessedRouters = filterRouter(role, asyncRouterMap);
-        // @ts-ignore
-        const addRouters = accessedRouters;
-        // @ts-ignore
-        const routers = constantRouterMap.concat(accessedRouters);
-        commit("setRouters", { addRouters, routers });
-        resolve();
-      });
+    async GenerateRoutes({ commit }: any, role: number) {
+      const routerMap = _.cloneDeep(asyncRouterMap);
+      const accessedRouters = filterRouter(role, routerMap);
+      // @ts-ignore
+      const addRouters = accessedRouters;
+      // @ts-ignore
+      const routers = constantRouterMap.concat(accessedRouters);
+      commit("setRouters", { addRouters, routers });
     },
   },
 };
