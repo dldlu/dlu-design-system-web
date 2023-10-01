@@ -96,6 +96,8 @@ export default {
         commit("setUserDesc", result.data);
       } else {
         localStorage.removeItem("TOKEN");
+        localStorage.removeItem("IsStu");
+        localStorage.removeItem("Number");
       }
       return result;
     },
