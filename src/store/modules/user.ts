@@ -93,11 +93,13 @@ export default {
         if (!result.data["role_id"]) {
           result.data["role_id"] = 1;
         }
+        localStorage.setItem("role_id", result.data.role_id.toString());
         commit("setUserDesc", result.data);
       } else {
         localStorage.removeItem("TOKEN");
         localStorage.removeItem("IsStu");
         localStorage.removeItem("Number");
+        localStorage.removeItem("role_id");
       }
       return result;
     },

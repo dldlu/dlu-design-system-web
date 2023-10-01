@@ -86,10 +86,9 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onBeforeMount, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
+import { computed, reactive, ref, toRaw, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
-import { delMajor, majorRequest, postMajor } from "@/service/info/major.ts";
 import { classRequest, delClass, postClass, putClass } from "@/service/info/class.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";

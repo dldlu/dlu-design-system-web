@@ -34,6 +34,7 @@ const logOut = () => {
   localStorage.removeItem("TOKEN");
   localStorage.removeItem("IsStu");
   localStorage.removeItem("Number");
+  localStorage.removeItem("role_id");
   router.push({ name: "login" });
 };
 </script>

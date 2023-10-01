@@ -2,9 +2,9 @@
   <div class="table">
     <div class="tableHeader">
       <year-select v-model:grade="approvalGrade" class="select100" />
-      <el-button @click="turnPage('myAppoint')">我的委托</el-button>
+      <el-button v-has="[2, 3, 4, 5, 6, 7]" @click="turnPage('myAppoint')">我的委托</el-button>
       <el-button @click="showReportForm">报题</el-button>
-      <el-button @click="turnPage('approve')">审阅</el-button>
+      <el-button v-has="[2, 3, 4, 5, 6, 7]" @click="turnPage('approve')">审阅</el-button>
     </div>
     <div class="tableBody">
       <el-table :data="subjects.array" stripe style="margin-top: 20px" max-height="500">

@@ -104,6 +104,6 @@ export const asyncRouterMap = [
   },
   {
     path: "/:pathMatch(.*)",
-    redirect: "/system",
+    redirect: "/404",
   },
 ];

@@ -4,25 +4,14 @@
     @select="turn"
     unique-opened
   >
-    <el-sub-menu index="system">
+    <el-sub-menu v-for="parent in menus" :index="parent.name">
       <template #title>
         <img src="../assets/md-room@1x.png" />
-        <span class="font" style="margin-left: 20px">系统管理</span>
+        <span class="font" style="margin-left: 20px">{{ parent.meta.title }}</span>
       </template>
-      <el-menu-item index="/system/user">用户管理</el-menu-item>
-      <el-menu-item index="/system/role">角色管理</el-menu-item>
-      <el-menu-item index="/system/school">学校管理</el-menu-item>
-      <el-menu-item index="/system/college">学院管理</el-menu-item>
-      <el-menu-item index="/system/major">专业管理</el-menu-item>
-      <el-menu-item index="/system/class">班级管理</el-menu-item>
-      <el-menu-item index="/system/log">日志管理</el-menu-item>
-    </el-sub-menu>
-    <el-sub-menu index="paper">
-      <template #title>
-        <img src="../assets/md-room@1x.png" />
-        <span class="font" style="margin-left: 20px">论文管理</span>
-      </template>
-      <el-menu-item index="/paper/approval">题目审批表</el-menu-item>
+      <el-menu-item v-for="child in parent.children" :index="parent.path + '/' + child.path">
+        {{ child.meta.title }}
+      </el-menu-item>
     </el-sub-menu>
     <el-sub-menu index="2">
       <template #title>
@@ -36,8 +25,16 @@
 
 <script lang="ts" setup>
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
+import { computed } from "vue";
 const router = useRouter();
 const route = useRoute();
+const store = useStore();
+console.log(store.state.user.addRouters);
+let menus = computed(() => {
+  return store.state.user.addRouters.filter((item) => item.hasOwnProperty("meta"));
+});
+console.log(menus);
 const turn = (indexPath: string) => {
   router.push(`${indexPath}`);
 };
