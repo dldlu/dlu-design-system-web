@@ -30,11 +30,9 @@ import { computed } from "vue";
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-console.log(store.state.user.addRouters);
 let menus = computed(() => {
   return store.state.user.addRouters.filter((item) => item.hasOwnProperty("meta"));
 });
-console.log(menus);
 const turn = (indexPath: string) => {
   router.push(`${indexPath}`);
 };

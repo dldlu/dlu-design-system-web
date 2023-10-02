@@ -20,6 +20,7 @@ export interface userDesc {
   degree_name?: string;
   office_id?: number;
   office_name?: string;
+  year?: number;
   is_delete: number;
 }
 
