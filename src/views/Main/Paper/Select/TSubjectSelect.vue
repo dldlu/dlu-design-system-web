@@ -90,25 +90,22 @@
       </span>
     </template>
   </el-dialog>
-  <proposal-report title="题目详情" :type="3" :subjectId="currentSubjectId" ref="detailRef" />
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 import { AdjustSub, postTeacherSelect } from "@/service/select/adjust.ts";
 import { ElMessage } from "element-plus";
+import { bus } from "@/utils/bus.ts";
 
 const store = useStore();
 const router = useRouter();
-const detailRef = ref<any>();
 let adjustTableVisible = ref<boolean>(false);
 let adjustSubjectId = ref<number>(0);
 let adjustStudentId = ref<number>(0);
 let currentAdjustSubjectIndex = ref<number>(0);
-let currentSubjectId = ref<number>(0);
 let majorId = 0;
 let subjects = computed(() => {
   return store.state.subject.teacherSelectList;
@@ -128,8 +125,7 @@ const showAdjustTable = (id, index) => {
   currentAdjustSubjectIndex.value = index;
 };
 const showDetail = (id) => {
-  currentSubjectId.value = id;
-  detailRef.value.showForm();
+  bus.emit("showDetail", id);
 };
 const sendTeacherSelect = async () => {
   let params: AdjustSub;

@@ -117,7 +117,6 @@
       </span>
     </template>
   </el-dialog>
-  <proposal-report title="题目详情" :type="3" :subjectId="currentSubjectId" ref="detailRef" />
 </template>
 
 <script setup lang="ts">
@@ -126,7 +125,6 @@ import { computed, onBeforeMount, onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import { useRouter } from "vue-router";
-import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 import {
   GetStuSelect,
   getStuSelected,
@@ -136,12 +134,11 @@ import {
   SubjectInfo,
 } from "@/service/select/student.ts";
 import { ElMessage } from "element-plus";
+import { bus } from "@/utils/bus.ts";
 
 const store = useStore();
 const router = useRouter();
 let pageRef = ref<any>();
-let detailRef = ref<any>();
-let currentSubjectId = ref<number>(0);
 let selectTableVisible = ref<boolean>(false);
 let firstSubjectId = ref<number>(0);
 let secondSubjectId = ref<number>(0);
@@ -170,8 +167,6 @@ const getData = async (pageParams: pageBody) => {
   await store.dispatch("subject/getStudentSelectList", data);
   firstSubjectId.value = store.state.subject.studentSelectList.array.firstSubjectId;
   secondSubjectId.value = store.state.subject.studentSelectList.array.secondSubjectId;
-  console.log(store.state.subject.studentSelectList.array.secondSubjectId);
-  console.log(store.state.subject.studentSelectList.array.secondSubjectId);
 };
 
 const query = () => {
@@ -180,8 +175,7 @@ const query = () => {
 };
 
 const showDetail = (id) => {
-  currentSubjectId.value = id;
-  detailRef.value.showForm();
+  bus.emit("showDetail", id);
 };
 
 const submitSelect = async () => {

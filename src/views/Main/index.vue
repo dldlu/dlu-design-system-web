@@ -13,12 +13,28 @@
       </div>
     </div>
   </div>
+  <proposal-report title="题目详情" :type="3" :subjectId="currentSubjectId" ref="detailRef" />
 </template>
 
 <script lang="ts" setup>
 import MyHeader from "@/components/MyHeader.vue";
 import MyNav from "@/components/MyNav.vue";
 import MyBreadcrumb from "@/components/MyBreadcrumb.vue";
+import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { bus } from "@/utils/bus.ts";
+
+let detailRef = ref<any>();
+let currentSubjectId = ref<number>(0);
+onMounted(() => {
+  bus.on("showDetail", (id: number) => {
+    currentSubjectId.value = id;
+    detailRef.value.showForm();
+  });
+});
+onBeforeUnmount(() => {
+  bus.off("showDetail");
+});
 </script>
 
 <style lang="less" scoped>

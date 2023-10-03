@@ -170,7 +170,6 @@
       </span>
     </template>
   </el-dialog>
-  <proposal-report title="题目详情" :type="3" :subjectId="currentSubjectId" ref="detailRef" />
 </template>
 
 <script setup lang="ts">
@@ -187,7 +186,6 @@ import {
   postAdjustSubRes,
   postAdjustTeaRes,
 } from "@/service/select/adjust.ts";
-import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 import { ElMessage } from "element-plus";
 import { pageData } from "@/service/type.ts";
 import { subjectInfo } from "@/service/subject/self.ts";
@@ -195,16 +193,15 @@ import { approveListRequest } from "@/service/subject/approve.ts";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import MyPagination from "@/components/MyPagination.vue";
 import TeacherSelect from "@/components/teacherSelect.vue";
+import { bus } from "@/utils/bus.ts";
 
 const store = useStore();
 let status = ref<number>(0);
 let adjustSubVisible = ref<boolean>(false);
 let adjustTeaVisible = ref<boolean>(false);
 let currentStuIndex = ref<number>(0);
-let currentSubjectId = ref<number>(0);
 let selectSubjectId = ref<number>(0);
 let teacherId = ref<number>(0);
-let detailRef = ref<any>();
 let pageRef = ref<any>();
 let params = reactive({
   grade: new Date().getFullYear(),
@@ -259,8 +256,9 @@ const showAdjustTable = (index) => {
 };
 
 const showDetail = (id) => {
-  currentSubjectId.value = id;
-  detailRef.value.showForm();
+  if (id) {
+    bus.emit("showDetail", id);
+  }
 };
 
 const submitAdjust = async () => {

@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <year-select v-model:grade="approvalGrade" class="select100" />
+      <year-select v-has="[2, 3, 4, 5, 6, 7]" v-model:grade="approvalGrade" class="select100" />
       <el-button v-has="[2, 3, 4, 5, 6, 7]" @click="turnPage('myAppoint')">我的委托</el-button>
       <el-button @click="showReportForm">报题</el-button>
       <el-button v-has="[2, 3, 4, 5, 6, 7]" @click="turnPage('approve')">审阅</el-button>
@@ -84,6 +84,7 @@
     title="题目详情"
     :type="detailType"
     :subjectId="currentSubjectId"
+    @getNewData="getNewData"
     ref="detailRef"
   />
 </template>
@@ -91,7 +92,7 @@
 <script setup lang="ts">
 import YearSelect from "@/components/yearSelect.vue";
 import MyPagination from "@/components/MyPagination.vue";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import { useRouter } from "vue-router";
