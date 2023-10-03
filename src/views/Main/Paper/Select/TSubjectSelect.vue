@@ -98,7 +98,7 @@ import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
-import { AdjustRes, postTeacherSelect } from "@/service/select/adjust.ts";
+import { AdjustSub, postTeacherSelect } from "@/service/select/adjust.ts";
 import { ElMessage } from "element-plus";
 
 const store = useStore();
@@ -132,7 +132,7 @@ const showDetail = (id) => {
   detailRef.value.showForm();
 };
 const sendTeacherSelect = async () => {
-  let params: AdjustRes;
+  let params: AdjustSub;
   params = {
     studentId: adjustStudentId.value,
     subjectId: adjustSubjectId.value,

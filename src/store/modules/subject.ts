@@ -13,6 +13,7 @@ import {
   UncertainList,
 } from "@/service/select/adjust.ts";
 import { GetStuSelect, getStuSelectList, StuSelectList } from "@/service/select/student.ts";
+import { pageBody } from "@/store/modules/baseInfo.ts";
 
 interface SubjectState {
   selfSubject: pageData<subjectInfo>;
@@ -83,7 +84,7 @@ export default {
         return error.response.data;
       }
     },
-    async getApproveListAction({ commit }: any, data: approveListRequest) {
+    async getApproveListAction({ commit }: any, data: approveListRequest & pageBody) {
       try {
         let result = await postApprovelist(data);
         if (result.data) {

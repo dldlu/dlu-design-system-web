@@ -28,11 +28,17 @@ export interface CertainList {
   subjectId: number;
 }
 
-export interface AdjustRes {
+export interface AdjustSub {
   majorId: number;
   studentId: number;
   subjectId: number;
 }
+
+export interface AdjustTea {
+  subjectId: number;
+  teacherId: number;
+}
+
 export interface OverStu {
   firstSubject: SubjectInfo;
   secondSubject: SubjectInfo;
@@ -54,7 +60,7 @@ export const getUncertainList = (year: number) =>
 export const getCertainList = (year: number) =>
   requests.get<CertainList[]>(`/selection/adjust/certain/${year}`);
 
-export const postTeacherSelect = (data: AdjustRes) =>
+export const postTeacherSelect = (data: AdjustSub) =>
   requests.post<null>("/selection/adjust/tearcherselect", data);
 
 export const getOverStuList = (majorId: number, grade: number) =>
@@ -63,5 +69,8 @@ export const getOverStuList = (majorId: number, grade: number) =>
 export const getOverSubList = (majorId: number, grade: number) =>
   requests.get<OverSub[]>(`/selection/adjust/unselectsubject/${majorId}/${grade}`);
 
-export const postAdjustRes = (data: AdjustRes) =>
+export const postAdjustSubRes = (data: AdjustSub) =>
   requests.post<null>("/selection/adjust/student", data);
+
+export const postAdjustTeaRes = (data: AdjustTea) =>
+  requests.post<null>("/selection/adjust/teacher", data);
