@@ -5,7 +5,11 @@ import { getSelfAppoint } from "@/service/subject/appoint.ts";
 import {
   CertainList,
   getCertainList,
+  getOverStuList,
+  getOverSubList,
   getUncertainList,
+  OverStu,
+  OverSub,
   UncertainList,
 } from "@/service/select/adjust.ts";
 import { GetStuSelect, getStuSelectList, StuSelectList } from "@/service/select/student.ts";
@@ -15,6 +19,8 @@ interface SubjectState {
   approveList: pageData<subjectInfo>;
   teacherSelectList: Array<CertainList | UncertainList>;
   studentSelectList: StuSelectList;
+  overStudentList: OverStu[];
+  overSubjectList: OverSub[];
 }
 
 export default {
@@ -41,6 +47,8 @@ export default {
           secondSubjectId: 0,
         },
       },
+      overStudentList: [],
+      overSubjectList: [],
     };
   },
   mutations: {
@@ -55,6 +63,12 @@ export default {
     },
     setStudentSelectList(state: SubjectState, payload: any) {
       state.studentSelectList = payload.list;
+    },
+    setOverStudentList(state: SubjectState, payload: any) {
+      state.overStudentList = payload.list;
+    },
+    setOverSubjectList(state: SubjectState, payload: any) {
+      state.overSubjectList = payload.list;
     },
   },
   actions: {
@@ -95,8 +109,16 @@ export default {
       try {
         let result1 = await getUncertainList(year);
         let result2 = await getCertainList(year);
-        let list = [...result1.data, ...result2.data];
-        commit("setTeacherSelectList", { list });
+        let list: any[] = [];
+        if (result1.status_code === 10000) {
+          list = list.concat(result1.data);
+        }
+        if (result2.status_code === 10000) {
+          list = list.concat(result2.data);
+        }
+        if (list.length !== 0) {
+          commit("setTeacherSelectList", { list });
+        }
       } catch (error: any) {
         return error.response.data;
       }
@@ -106,6 +128,30 @@ export default {
         let result = await getStuSelectList(data);
         if (result.data) {
           commit("setStudentSelectList", { list: result.data });
+        }
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getOverStudentList({ commit }: any, data: { majorId: number; grade: number }) {
+      try {
+        let result = await getOverStuList(data.majorId, data.grade);
+        if (result.data) {
+          commit("setOverStudentList", { list: result.data });
+        } else {
+          commit("setOverStudentList", { list: [] });
+        }
+      } catch (error: any) {
+        return error.response.data;
+      }
+    },
+    async getOverSubjectList({ commit }: any, data: { majorId: number; grade: number }) {
+      try {
+        let result = await getOverSubList(data.majorId, data.grade);
+        if (result.data) {
+          commit("setOverSubjectList", { list: result.data });
+        } else {
+          commit("setOverSubjectList", { list: [] });
         }
       } catch (error: any) {
         return error.response.data;

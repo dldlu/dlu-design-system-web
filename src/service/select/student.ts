@@ -33,24 +33,12 @@ export interface StuSelect {
 
 export interface SelectedData {
   firstChangeCount: number;
-  firstSubject: FirstSubject | undefined;
-  secondSubject: SecondSubject | undefined;
+  firstSubject: SubjectInfo | undefined;
+  secondSubject: SubjectInfo | undefined;
   secondChangeCount: number;
 }
 
-export interface FirstSubject {
-  first_teacher_id: number;
-  first_teacher_name: string;
-  first_teacher_title_name: string;
-  headline: string;
-  id: number;
-  origin_id: number;
-  origin_name: string;
-  type_id: number;
-  type_name: string;
-}
-
-export interface SecondSubject {
+export interface SubjectInfo {
   first_teacher_id: number;
   first_teacher_name: string;
   first_teacher_title_name: string;

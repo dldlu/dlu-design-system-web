@@ -1,7 +1,7 @@
 <template>
   <div class="table">
     <div class="tableHeader">
-      <el-button v-has="[3, 4, 5, 6, 7]" @click="turnPage('approve')">审阅</el-button>
+      <el-button v-has="[3, 4, 5, 6, 7]" @click="turnPage('selectApprove')">审阅</el-button>
     </div>
     <div class="tableBody">
       <el-table :data="subjects" stripe style="margin-top: 20px">
@@ -98,7 +98,7 @@ import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
-import { postTeacherSelect, TeacherSelect } from "@/service/select/adjust.ts";
+import { AdjustRes, postTeacherSelect } from "@/service/select/adjust.ts";
 import { ElMessage } from "element-plus";
 
 const store = useStore();
@@ -132,7 +132,7 @@ const showDetail = (id) => {
   detailRef.value.showForm();
 };
 const sendTeacherSelect = async () => {
-  let params: TeacherSelect;
+  let params: AdjustRes;
   params = {
     studentId: adjustStudentId.value,
     subjectId: adjustSubjectId.value,

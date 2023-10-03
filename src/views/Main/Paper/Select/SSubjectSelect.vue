@@ -128,13 +128,12 @@ import { pageBody } from "@/store/modules/baseInfo.ts";
 import { useRouter } from "vue-router";
 import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 import {
-  FirstSubject,
   GetStuSelect,
   getStuSelected,
   postStuSelect,
-  SecondSubject,
   SelectedData,
   StuSelect,
+  SubjectInfo,
 } from "@/service/select/student.ts";
 import { ElMessage } from "element-plus";
 
@@ -152,9 +151,9 @@ let params = reactive({
   condition: "",
 });
 let selectedData = reactive<SelectedData>({
-  firstSubject: {} as FirstSubject,
+  firstSubject: {} as SubjectInfo,
   firstChangeCount: 0,
-  secondSubject: {} as SecondSubject,
+  secondSubject: {} as SubjectInfo,
   secondChangeCount: 0,
 });
 let subjectList = computed(() => {

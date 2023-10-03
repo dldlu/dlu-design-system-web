@@ -100,6 +100,14 @@ export const asyncRouterMap = [
         path: "select",
         component: () => import("@/views/Main/Paper/Select/index.vue"),
         meta: { title: "选题管理", role: 1 },
+        children: [
+          {
+            name: "selectApprove",
+            path: "selectApprove",
+            component: () => import("@/views/Main/Paper/Select/selectApprove.vue"),
+            meta: { title: "选题审批", role: 3 },
+          },
+        ],
       },
     ],
   },
