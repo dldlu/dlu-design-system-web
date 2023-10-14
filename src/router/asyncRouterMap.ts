@@ -109,6 +109,12 @@ export const asyncRouterMap = [
           },
         ],
       },
+      {
+        name: "plan",
+        path: "plan",
+        component: () => import("@/views/Main/Paper/Plan/index.vue"),
+        meta: { title: "计划管理", role: 1 },
+      },
     ],
   },
   {
