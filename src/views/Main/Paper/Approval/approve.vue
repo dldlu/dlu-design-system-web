@@ -44,7 +44,7 @@
               v-model="allCheck"
               @change="setAllCheck"
               size="small"
-              :disabled="approveList.array === null"
+              :disabled="approveList.array.length === 0"
             />
           </template>
           <template #default="scope">
@@ -352,9 +352,6 @@ const delSubject = async (id) => {
   }
 };
 const showAppointTable = (subject) => {
-  majorApprove.value =
-    currentProgress.value !== 1 || ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);
-  collegeApprove.value = currentProgress.value !== 2 || store.state.user.userDesc.role_id !== 4;
   appointForm.subjectIds.push(subject.subject_id);
   if (route.name === "approve" || route.name === "myAppoint") {
     approveTableVisible.value = true;
@@ -362,6 +359,9 @@ const showAppointTable = (subject) => {
   } else if (route.name === "appointManage") {
     appointTableVisible.value = true;
   }
+  majorApprove.value =
+    currentProgress.value !== 1 || ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);
+  collegeApprove.value = currentProgress.value !== 2 || store.state.user.userDesc.role_id !== 4;
 };
 const showBulkTable = () => {
   majorApprove.value = ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);

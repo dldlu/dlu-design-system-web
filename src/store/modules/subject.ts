@@ -24,20 +24,18 @@ interface SubjectState {
   overSubjectList: OverSub[];
 }
 
+const emptyData = {
+  array: [],
+  item_total: 0,
+  page_total: 0,
+};
+
 export default {
   namespaced: true,
   state(): SubjectState {
     return {
-      selfSubject: {
-        array: [],
-        item_total: 0,
-        page_total: 0,
-      },
-      approveList: {
-        array: [],
-        item_total: 0,
-        page_total: 0,
-      },
+      selfSubject: emptyData,
+      approveList: emptyData,
       teacherSelectList: [],
       studentSelectList: {
         item_total: 0,
@@ -76,8 +74,10 @@ export default {
     async getSelfSubjectAction({ commit }: any, data: subjectBody) {
       try {
         let result = await getSelfSubject(data);
-        if (result.data) {
+        if (result.data.array) {
           commit("setSelfSubject", { selfSubject: result.data });
+        } else {
+          commit("setSelfSubject", { selfSubject: emptyData });
         }
         return result;
       } catch (error: any) {
@@ -87,8 +87,10 @@ export default {
     async getApproveListAction({ commit }: any, data: approveListRequest & pageBody) {
       try {
         let result = await postApprovelist(data);
-        if (result.data) {
+        if (result.data.array) {
           commit("setApproveList", { approveList: result.data });
+        } else {
+          commit("setApproveList", { approveList: emptyData });
         }
         return result;
       } catch (error: any) {

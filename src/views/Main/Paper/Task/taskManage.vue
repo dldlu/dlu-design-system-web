@@ -13,7 +13,7 @@
             type="primary"
             @click="showAdjustTable(subjectInfo.subject_id, index)"
           >
-            填写/修改
+            {{ store.state.user.userDesc.role_id === 1 ? "查看" : "填写/修改" }}
           </el-button>
         </template>
       </base-subject-table>
