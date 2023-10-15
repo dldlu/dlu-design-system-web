@@ -4,45 +4,15 @@
       <year-select v-has="[2, 3, 4, 5, 6, 7]" v-model:grade="year" class="select100" />
     </div>
     <div class="tableBody">
-      <el-table :data="subjectList.array" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column min-width="100">
-          <template #default="scope">
-            <div>
-              {{ scope.$index + 1 }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="headline" label="论文题目" min-width="300">
-          <template #default="scope">
-            <div @click="showDetail(subjectList.array[scope.$index].subject_id)">
-              {{ subjectList.array[scope.$index].headline }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="学生姓名" min-width="150">
-          <template #default="scope">
-            <el-tooltip placement="bottom-start" effect="light">
-              <template #content>
-                学号:{{ subjectList.array[scope.$index].student_number }}<br />手机号:{{
-                  subjectList.array[scope.$index].student_phone
-                }}
-              </template>
-              {{ subjectList.array[scope.$index].student_name }}
-            </el-tooltip>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" min-width="150">
-          <template #default="scope">
-            <el-button
-              size="small"
-              type="primary"
-              @click="showAdjustTable(subjectList.array[scope.$index].subject_id)"
-              >点击进行计划操作</el-button
-            >
-          </template>
-        </el-table-column>
-      </el-table>
+      <base-subject-table>
+        <template #option="{ subjectInfo }">
+          <el-button size="small" type="primary" @click="showAdjustTable(subjectInfo.subject_id)">
+            点击进行计划操作
+          </el-button>
+        </template>
+      </base-subject-table>
     </div>
+
     <div class="tableFooter">
       <my-pagination :page_total="subjectList.page_total" @getData="getData" ref="pageRef" />
     </div>
@@ -62,10 +32,14 @@
         style="display: flex; align-items: center; margin-bottom: 10px"
       >
         <div>第{{ index + 1 }}周:</div>
-        <el-input v-model="plans[index]" style="margin-left: 10px; width: 500px" />
+        <el-input
+          :disabled="store.state.user.userDesc.role_id === 1"
+          v-model="plans[index]"
+          style="margin-left: 10px; width: 500px"
+        />
       </div>
     </div>
-    <template #footer>
+    <template v-if="store.state.user.userDesc.role_id !== 1" #footer>
       <span>
         <el-button @click="submitAdjust">提交</el-button>
       </span>
@@ -74,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import YearSelect from "@/components/yearSelect.vue";
 import { computed, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
@@ -82,6 +56,7 @@ import { pageBody } from "@/store/modules/baseInfo.ts";
 import { bus } from "@/utils/bus.ts";
 import { getPlans, plan, postPlans } from "@/service/subject/plan.ts";
 import { ElMessage } from "element-plus";
+import BaseSubjectTable from "@/components/baseSubjectTable.vue";
 
 const store = useStore();
 let pageRef = ref<any>();

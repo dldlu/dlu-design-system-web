@@ -40,11 +40,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { cancelRole } from "@/service/user/userManage.ts";
 import { ElMessage } from "element-plus";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
 const store = useStore();

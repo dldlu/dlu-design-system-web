@@ -65,7 +65,7 @@
 <script lang="ts" setup>
 import { useStore } from "vuex";
 import { computed, nextTick, reactive, ref, watch } from "vue";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 
 const store = useStore();
 let pageRef = ref();

@@ -112,12 +112,12 @@
   </el-dialog>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, computed, watch, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import { changeTchRole, deleteUser, initPassword } from "@/service/user/userManage.ts";
 import { ElMessage } from "element-plus";

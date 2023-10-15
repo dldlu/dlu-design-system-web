@@ -171,7 +171,13 @@
     <template #footer>
       <span>
         <el-button @click="appointTableVisible = false">取消</el-button>
-        <el-button type="primary" @click="sendAppointReq"> 确定 </el-button>
+        <el-button
+          type="primary"
+          :disabled="appointForm.subjectIds.length === 0"
+          @click="sendAppointReq"
+        >
+          确定
+        </el-button>
       </span>
     </template>
   </el-dialog>
@@ -226,9 +232,9 @@
 </template>
 
 <script setup lang="ts">
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import YearSelect from "@/components/yearSelect.vue";
-import { computed, onMounted, onUpdated, reactive, ref, watch } from "vue";
+import { computed, onUpdated, reactive, ref, watch } from "vue";
 import MajorSelect from "@/components/majorSelect.vue";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import { useStore } from "vuex";
@@ -239,7 +245,7 @@ import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import TeacherSelect from "@/components/teacherSelect.vue";
 import { appointRequest, postAppoint } from "@/service/subject/appoint.ts";
-import { subjectBody, subjectInfo } from "@/service/subject/self.ts";
+import { subjectBody } from "@/service/subject/self.ts";
 import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 
 const store = useStore();

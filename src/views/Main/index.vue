@@ -17,9 +17,9 @@
 </template>
 
 <script lang="ts" setup>
-import MyHeader from "@/components/MyHeader.vue";
-import MyNav from "@/components/MyNav.vue";
-import MyBreadcrumb from "@/components/MyBreadcrumb.vue";
+import MyHeader from "@/components/myHeader.vue";
+import MyNav from "@/components/myNav.vue";
+import MyBreadcrumb from "@/components/myBreadcrumb.vue";
 import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { bus } from "@/utils/bus.ts";

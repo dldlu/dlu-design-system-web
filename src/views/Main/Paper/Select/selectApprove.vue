@@ -191,7 +191,7 @@ import { pageData } from "@/service/type.ts";
 import { subjectInfo } from "@/service/subject/self.ts";
 import { approveListRequest } from "@/service/subject/approve.ts";
 import { pageBody } from "@/store/modules/baseInfo.ts";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import TeacherSelect from "@/components/teacherSelect.vue";
 import { bus } from "@/utils/bus.ts";
 

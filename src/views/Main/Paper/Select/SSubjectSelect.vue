@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import { computed, onBeforeMount, onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";

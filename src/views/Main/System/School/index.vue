@@ -83,11 +83,11 @@
 </template>
 <script lang="ts" setup>
 import { useStore } from "vuex";
-import { computed, onMounted, reactive, ref, toRaw, toRefs, watch } from "vue";
-import { ElMessage } from "element-plus";
+import { computed, reactive, ref, toRaw } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 import { delSchool, postSchool, putSchool, schoolRequest } from "@/service/info/school.ts";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 
 type addSchForm = {

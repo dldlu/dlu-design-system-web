@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, toRaw, toRefs, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 interface Props {
   size: number;

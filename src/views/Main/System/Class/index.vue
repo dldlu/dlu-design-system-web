@@ -87,12 +87,12 @@
 <script lang="ts" setup>
 import { useStore } from "vuex";
 import { computed, reactive, ref, toRaw, watch } from "vue";
-import { ElMessage } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
+import { ElMessage } from "element-plus";
 import { classRequest, delClass, postClass, putClass } from "@/service/info/class.ts";
 import CollegeSelect from "@/components/collegeSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
-import MyPagination from "@/components/MyPagination.vue";
+import MyPagination from "@/components/myPagination.vue";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import YearSelect from "@/components/yearSelect.vue";
 
