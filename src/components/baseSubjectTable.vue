@@ -40,7 +40,11 @@
     <el-table-column prop="progress_name" label="状态" min-width="150" />
     <el-table-column label="操作" min-width="150">
       <template #default="scope">
-        <slot name="option" :subjectInfo="subjectList.array[scope.$index]"> </slot>
+        <slot
+          name="option"
+          :subjectInfo="subjectList.array[scope.$index]"
+          :index="scope.$index"
+        ></slot>
       </template>
     </el-table-column>
   </el-table>

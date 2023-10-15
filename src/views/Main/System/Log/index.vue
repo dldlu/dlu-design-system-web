@@ -78,6 +78,7 @@ const stateOptions = [
   {
     id: 0,
     name: "全部日志",
+    type: "",
   },
   {
     id: 1,
@@ -94,6 +95,7 @@ const methodOptions = [
   {
     id: 0,
     name: "全部类型",
+    type: "",
   },
   {
     id: 1,

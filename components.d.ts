@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BaseApproveTable: typeof import('./src/components/baseApproveTable.vue')['default']
     BaseSubjectTable: typeof import('./src/components/baseSubjectTable.vue')['default']
     CollegeSelect: typeof import('./src/components/collegeSelect.vue')['default']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
@@ -17,7 +18,7 @@ declare module '@vue/runtime-core' {
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
     ElCheckboxButton: (typeof import("element-plus/es"))["ElCheckboxButton"]
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
-    ElDatePicker: (typeof import("element-plus/es"))["ElDatePicker"]
+    ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElDropdown: typeof import('element-plus/es')['ElDropdown']
     ElDropdownItem: typeof import('element-plus/es')['ElDropdownItem']
