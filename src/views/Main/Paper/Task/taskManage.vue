@@ -52,7 +52,7 @@ const showTask = (headline, subject_id) => {
   bus.emit("showTask", {
     title: isStu ? "任务书详情" : "填写任务书",
     headline,
-    isChange: isStu,
+    isChange: !isStu,
     subject_id,
   });
 };

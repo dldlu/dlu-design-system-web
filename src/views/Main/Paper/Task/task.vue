@@ -37,7 +37,7 @@
             v-model="taskForm.according"
             :rows="4"
             type="textarea"
-            :disabled="props.isChange"
+            :disabled="!props.isChange"
           />
         </el-form-item>
         <el-form-item label="论文要求(设计参数)" prop="require">
@@ -45,7 +45,7 @@
             v-model="taskForm.require"
             :rows="4"
             type="textarea"
-            :disabled="props.isChange"
+            :disabled="!props.isChange"
           />
         </el-form-item>
         <el-form-item label="个人工作重点" prop="importance">
@@ -53,7 +53,7 @@
             v-model="taskForm.importance"
             :rows="4"
             type="textarea"
-            :disabled="props.isChange"
+            :disabled="!props.isChange"
           />
         </el-form-item>
         <el-form-item label="应阅读的基本文献录目(要求不少于10篇)" prop="literature">
@@ -61,12 +61,12 @@
             v-model="taskForm.literature"
             :rows="4"
             type="textarea"
-            :disabled="props.isChange"
+            :disabled="!props.isChange"
           />
         </el-form-item>
       </el-form>
     </div>
-    <template v-if="!props.isChange" #footer>
+    <template v-if="props.isChange" #footer>
       <span>
         <el-button @click="submitAdjust(formRef)">提交</el-button>
       </span>
