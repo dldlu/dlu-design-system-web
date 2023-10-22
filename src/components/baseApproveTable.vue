@@ -28,7 +28,7 @@
         <el-table-column prop="subject_id" label="ID" min-width="50" />
         <el-table-column prop="headline" label="论文题目" min-width="300">
           <template #default="scope">
-            <div @click="showDetail(subjectList.array[scope.$index].subject_id)">
+            <div @click="showDetail(subjectList.array[scope.$index])">
               {{ subjectList.array[scope.$index].headline }}
             </div>
           </template>
@@ -128,7 +128,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref, toRaw, watch } from "vue";
 import { useStore } from "vuex";
-import { bus } from "@/utils/bus.ts";
 import YearSelect from "@/components/yearSelect.vue";
 import MajorSelect from "@/components/majorSelect.vue";
 import { approveListRequest, approveRequest } from "@/service/subject/approve.ts";
@@ -145,7 +144,7 @@ interface Props {
 }
 
 const store = useStore();
-const emit = defineEmits(["sendApprove"]);
+const emit = defineEmits(["sendApprove", "showDetail"]);
 let props = withDefaults(defineProps<Props>(), {
   firstProgress: 6,
   secondProgress: 7,
@@ -210,8 +209,8 @@ const query = () => {
   pageRef.value.comGetData();
 };
 
-const showDetail = (id) => {
-  bus.emit("showDetail", id);
+const showDetail = (subjectInfo) => {
+  emit("showDetail", subjectInfo);
 };
 
 const showApproveTable = (info) => {
