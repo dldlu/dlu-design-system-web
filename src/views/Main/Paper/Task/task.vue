@@ -79,6 +79,7 @@ import { reactive, ref } from "vue";
 import { ElMessage, FormInstance, FormRules } from "element-plus";
 import { useStore } from "vuex";
 import { getTaskDetail, postAddTask, task } from "@/service/subject/task.ts";
+import { bus } from "@/utils/bus.ts";
 
 interface Props {
   isChange: boolean;
@@ -145,7 +146,7 @@ const submitAdjust = async (formEl: FormInstance | undefined) => {
       let res = await postAddTask(data);
       if (res.status_code === 10000) {
         ElMessage.success(res.status_msg);
-        emit("getNewData");
+        bus.emit("getTaskData");
       } else {
         ElMessage.error(res.status_msg);
       }

@@ -28,7 +28,7 @@
 import YearSelect from "@/components/yearSelect.vue";
 import BaseSubjectTable from "@/components/baseSubjectTable.vue";
 import MyPagination from "@/components/myPagination.vue";
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import { useRouter } from "vue-router";
@@ -66,6 +66,15 @@ const getData = (pageParams: pageBody) => {
 const turnPage = (name) => {
   router.push({ name });
 };
+
+onMounted(() => {
+  bus.on("getTaskData", () => {
+    pageRef.value.comGetData();
+  });
+});
+onBeforeUnmount(() => {
+  bus.off("getTaskData");
+});
 </script>
 
 <style scoped lang="less"></style>
