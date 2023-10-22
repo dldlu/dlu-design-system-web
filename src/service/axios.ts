@@ -1,8 +1,8 @@
+import type { AxiosInstance, AxiosRequestConfig } from "axios";
 import axios from "axios";
 // @ts-ignore
 import nprogress from "nprogress";
 import "nprogress/nprogress.css";
-import type { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export interface response<T = any> {
   status_code: number;
@@ -28,6 +28,7 @@ service.interceptors.response.use(
     return res.data;
   },
   (error) => {
+    nprogress.done();
     return error.response.data;
   },
 );
@@ -37,19 +38,11 @@ export const requests = {
     return service.get(url, config);
   },
 
-  post<T>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<response<T>> {
+  post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<response<T>> {
     return service.post(url, data, config);
   },
 
-  put<T>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig,
-  ): Promise<response<T>> {
+  put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<response<T>> {
     return service.put(url, data, config);
   },
 

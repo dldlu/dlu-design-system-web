@@ -92,7 +92,6 @@ const store = useStore();
 let props = withDefaults(defineProps<Props>(), {
   isChange: false,
 });
-const emit = defineEmits(["getNewData"]);
 let adjustTaskVisible = ref<boolean>(false);
 let formRef = ref();
 let taskForm = reactive({

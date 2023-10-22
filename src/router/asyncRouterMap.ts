@@ -135,6 +135,26 @@ export const asyncRouterMap = [
           },
         ],
       },
+      {
+        name: "middleTerm",
+        path: "middleTerm",
+        component: () => import("@/views/Main/Paper/MiddleTerm/index.vue"),
+        meta: { title: "中期检查管理", role: 1 },
+        children: [
+          {
+            name: "middleApprove",
+            path: "approve",
+            component: () => import("@/views/Main/Paper/MiddleTerm/middleTermApprove.vue"),
+            meta: { title: "中期检查审批", role: 3 },
+          },
+          {
+            name: "middleAppoint",
+            path: "myAppoint",
+            component: () => import("@/views/Main/Paper/MiddleTerm/middleTermApprove.vue"),
+            meta: { title: "我的委任", role: 2 },
+          },
+        ],
+      },
     ],
   },
   {
