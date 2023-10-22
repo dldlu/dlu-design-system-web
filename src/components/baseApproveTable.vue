@@ -17,20 +17,14 @@
       <el-button @click="query" v-if="!props.appoint">查询</el-button>
     </div>
     <div class="tableBody">
-      <el-table :data="subjectList.array" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column min-width="50">
-          <template #header>
-            <el-checkbox
-              v-model="allCheck"
-              @change="setAllCheck"
-              size="small"
-              :disabled="subjectList.array.length === 0"
-            />
-          </template>
-          <template #default="scope">
-            <el-checkbox v-model="bulkList[scope.$index]" size="small" @change="checkIsAll" />
-          </template>
-        </el-table-column>
+      <el-table
+        :data="subjectList.array"
+        stripe
+        style="margin-top: 20px"
+        @selection-change="handleSelectionChange"
+        max-height="500"
+      >
+        <el-table-column type="selection" min-width="50" />
         <el-table-column prop="subject_id" label="ID" min-width="50" />
         <el-table-column prop="headline" label="论文题目" min-width="300">
           <template #default="scope">
@@ -132,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUpdated, reactive, ref, toRaw, watch } from "vue";
+import { computed, reactive, ref, toRaw, watch } from "vue";
 import { useStore } from "vuex";
 import { bus } from "@/utils/bus.ts";
 import YearSelect from "@/components/yearSelect.vue";
@@ -158,8 +152,7 @@ let props = withDefaults(defineProps<Props>(), {
 });
 let pageRef = ref();
 let approveTableVisible = ref<boolean>(false);
-let bulkList = reactive([]);
-let allCheck = ref<boolean>(false);
+let bulkList = ref([]);
 let subjectIds = reactive([]);
 let currentProgress = ref<number>(0);
 let options = reactive({
@@ -193,6 +186,10 @@ let subjectList = computed(() => {
   return store.state.subject.approveList;
 });
 
+const handleSelectionChange = (val) => {
+  bulkList.value = val;
+};
+
 const getData = (pageParams: pageBody) => {
   if (props.appoint) {
     const params = JSON.parse(JSON.stringify(pageParams));
@@ -213,21 +210,6 @@ const query = () => {
   pageRef.value.comGetData();
 };
 
-const setAllCheck = () => {
-  for (let i = 0; i < store.state.subject.approveList.array.length; i++) {
-    bulkList[i] = allCheck.value;
-  }
-};
-
-const checkIsAll = () => {
-  for (let i = 0; i < store.state.subject.approveList.array.length; i++) {
-    if (!bulkList[i]) {
-      allCheck.value = false;
-      return;
-    }
-  }
-  allCheck.value = true;
-};
 const showDetail = (id) => {
   bus.emit("showDetail", id);
 };
@@ -240,9 +222,9 @@ const showApproveTable = (info) => {
 
 const showBulkTable = (id) => {
   currentProgress.value = id;
-  bulkList.forEach((item, index) => {
+  bulkList.value.forEach((item) => {
     if (item) {
-      subjectIds.push(store.state.subject.approveList.array[index].subject_id);
+      subjectIds.push(item.subject_id);
     }
   });
   approveTableVisible.value = true;
@@ -267,13 +249,6 @@ const tableClose = () => {
   subjectIds.length = 0;
   currentProgress.value = 0;
 };
-
-onUpdated(() => {
-  allCheck.value = false;
-  for (let i = 0; i < 10; i++) {
-    bulkList[i] = false;
-  }
-});
 </script>
 
 <style scoped lang="less"></style>

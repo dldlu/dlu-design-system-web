@@ -37,20 +37,15 @@
       <el-button v-if="route.name === 'approve'">下载统计表</el-button>
     </div>
     <div class="tableBody">
-      <el-table :data="approveList.array" stripe style="margin-top: 20px" max-height="500">
-        <el-table-column min-width="50">
-          <template #header>
-            <el-checkbox
-              v-model="allCheck"
-              @change="setAllCheck"
-              size="small"
-              :disabled="approveList.array.length === 0"
-            />
-          </template>
-          <template #default="scope">
-            <el-checkbox v-model="bulkList[scope.$index]" size="small" @change="checkIsAll" />
-          </template>
-        </el-table-column>
+      <el-table
+        ref="tableRef"
+        :data="approveList.array"
+        stripe
+        style="margin-top: 20px"
+        @selection-change="handleSelectionChange"
+        max-height="500"
+      >
+        <el-table-column type="selection" min-width="50" />
         <el-table-column prop="subject_id" label="ID" min-width="50" />
         <el-table-column prop="headline" label="论文题目" min-width="300">
           <template #default="scope">
@@ -241,7 +236,7 @@ import { useStore } from "vuex";
 import { pageBody } from "@/store/modules/baseInfo.ts";
 import { approveListRequest, approveRequest } from "@/service/subject/approve.ts";
 import { delApply, genSerial, serialRequest, subjectApprove } from "@/service/subject/apply.ts";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElTable } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import TeacherSelect from "@/components/teacherSelect.vue";
 import { appointRequest, postAppoint } from "@/service/subject/appoint.ts";
@@ -251,6 +246,7 @@ import ProposalReport from "@/views/Main/Paper/Approval/proposalReport.vue";
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const tableRef = ref<InstanceType<typeof ElTable>>();
 let pageRef = ref<any>();
 let detailRef = ref<any>();
 let detailType = ref<number>(3);
@@ -265,8 +261,7 @@ let appointForm = reactive({
   number: "",
   suggest: "",
 });
-let bulkList = reactive([]);
-let allCheck = ref<boolean>(false);
+let bulkList = ref([]);
 let appointTableVisible = ref<boolean>(false);
 let approveTableVisible = ref<boolean>(false);
 let majorApprove = ref(false);
@@ -290,19 +285,9 @@ watch(teacher_number, () => {
 watch(number, () => {
   condition = number.value;
 });
-const setAllCheck = () => {
-  for (let i = 0; i < store.state.subject.approveList.array.length; i++) {
-    bulkList[i] = allCheck.value;
-  }
-};
-const checkIsAll = () => {
-  for (let i = 0; i < store.state.subject.approveList.array.length; i++) {
-    if (!bulkList[i]) {
-      allCheck.value = false;
-      return;
-    }
-  }
-  allCheck.value = true;
+
+const handleSelectionChange = (val) => {
+  bulkList.value = val;
 };
 
 const getData = (pageParams: pageBody) => {
@@ -366,9 +351,9 @@ const showAppointTable = (subject) => {
 const showBulkTable = () => {
   majorApprove.value = ![3, 5, 6, 7].includes(store.state.user.userDesc.role_id);
   collegeApprove.value = store.state.user.userDesc.role_id !== 4;
-  bulkList.forEach((item, index) => {
+  bulkList.value.forEach((item) => {
     if (item) {
-      appointForm.subjectIds.push(store.state.subject.approveList.array[index].subject_id);
+      appointForm.subjectIds.push(item.subject_id);
     }
   });
   if (route.name === "approve" || route.name === "myAppoint") {
@@ -415,10 +400,8 @@ const showDetail = (id, type) => {
   detailRef.value.showForm();
 };
 onUpdated(() => {
-  allCheck.value = false;
-  for (let i = 0; i < 10; i++) {
-    bulkList[i] = false;
-  }
+  tableRef.value!.clearSelection();
+  bulkList.value = [];
 });
 </script>
 
