@@ -155,6 +155,19 @@ export const asyncRouterMap = [
           },
         ],
       },
+      {
+        name:'process',
+        path: 'process',
+        component:()=>import("@/views/Main/Paper/Process/index.vue"),
+        meta: { title: "过程管理", role: 1 },
+        children:[
+          {
+            name:"processDetail",
+            path:"processDetail",
+            meta:{ title: "过程详情", role: 1 }
+          }
+        ]
+      }
     ],
   },
   {
