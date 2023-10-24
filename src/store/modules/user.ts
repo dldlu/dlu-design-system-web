@@ -1,8 +1,9 @@
-import { asyncRouterMap } from "@/router/asyncRouterMap.ts";
-import { constantRouterMap } from "@/router/constantRouterMap.ts";
-import { checkRole, LoginBody, stuLogin, tchLogin } from "@/service/user/login.ts";
-import { queryUserByNumber, userDesc } from "@/service/user/userInfo.ts";
+import {asyncRouterMap} from "@/router/asyncRouterMap.ts";
+import {constantRouterMap} from "@/router/constantRouterMap.ts";
+import {checkRole, LoginBody, stuLogin, tchLogin} from "@/service/user/login.ts";
+import {queryUserByNumber, userDesc} from "@/service/user/userInfo.ts";
 import _ from "lodash";
+
 interface UserState {
   token: string | null;
   userDesc: userDesc;
@@ -43,6 +44,11 @@ export default {
       addRouters: [],
     };
   },
+  getters: {
+    isStu(state: UserState) {
+      return state.userDesc.role_id === 1
+    }
+  },
   mutations: {
     setUserDesc(state: UserState, payload: userDesc) {
       state.userDesc = payload;
@@ -82,6 +88,7 @@ export default {
     async getUserDesc({ commit }: any) {
       const number = localStorage.getItem("Number");
       const is_stu = localStorage.getItem("IsStu");
+      console.log(number, is_stu)
       let result = await queryUserByNumber(number as string, Number(is_stu) as 1 | 2, 1);
       if (result.status_code === 10000) {
         if (!result.data["role_id"]) {
