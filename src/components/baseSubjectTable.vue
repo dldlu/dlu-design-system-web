@@ -1,5 +1,7 @@
 <template>
-  <el-table :data="subjectList.array" stripe style="margin-top: 20px" max-height="500">
+  <el-table ref="table" :data="subjectList.array" stripe style="margin-top: 20px" max-height="500">
+    <slot name="expand">
+    </slot>
     <el-table-column min-width="50">
       <template #default="scope">
         <div>
@@ -38,7 +40,7 @@
       </template>
     </el-table-column>
     <el-table-column prop="progress_name" label="状态" min-width="150" />
-    <el-table-column label="操作" min-width="150">
+    <el-table-column label="操作" min-width="200">
       <template #default="scope">
         <slot
           name="option"
@@ -51,17 +53,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { useStore } from "vuex";
-import { bus } from "@/utils/bus.ts";
+import {computed, ref} from "vue";
+import {useStore} from "vuex";
+import {bus} from "@/utils/bus.ts";
 
 const store = useStore();
+const table = ref()
 let subjectList = computed(() => {
   return store.state.subject.selfSubject;
 });
+
+const showExpand = (row) => {
+  table.value.toggleRowExpansion(row)
+}
 const showDetail = (id) => {
   bus.emit("showDetail", id);
 };
+defineExpose({showExpand})
 </script>
 
 <style scoped lang="less"></style>

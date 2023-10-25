@@ -50,12 +50,11 @@
 <script setup lang="ts">
 import MyPagination from "@/components/myPagination.vue";
 import YearSelect from "@/components/yearSelect.vue";
-import { computed, reactive, ref, watch } from "vue";
-import { useStore } from "vuex";
-import { pageBody } from "@/store/modules/baseInfo.ts";
-import { bus } from "@/utils/bus.ts";
-import { getPlans, plan, postPlans } from "@/service/subject/plan.ts";
-import { ElMessage } from "element-plus";
+import {computed, reactive, ref, watch} from "vue";
+import {useStore} from "vuex";
+import {pageBody} from "@/store/modules/baseInfo.ts";
+import {getPlans, plan, postPlans} from "@/service/subject/plan.ts";
+import {ElMessage} from "element-plus";
 import BaseSubjectTable from "@/components/baseSubjectTable.vue";
 
 const store = useStore();
@@ -75,9 +74,6 @@ const getData = (pageParams: pageBody) => {
   const params = JSON.parse(JSON.stringify(pageParams));
   params.year = year.value;
   store.dispatch("subject/getSelfSubjectAction", params);
-};
-const showDetail = (id) => {
-  bus.emit("showDetail", id);
 };
 
 const getCurPlan = async () => {

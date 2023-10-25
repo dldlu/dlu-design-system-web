@@ -189,6 +189,12 @@ export const asyncRouterMap = [
           },
         ],
       },
+      {
+        name: "file",
+        path: "file",
+        component: () => import("@/views/Main/Paper/File/index.vue"),
+        meta: {title: "文件管理", role: 1}
+      }
     ],
   },
   {
