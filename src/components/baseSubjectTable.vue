@@ -39,6 +39,8 @@
         </el-tooltip>
       </template>
     </el-table-column>
+    <slot name="extra">
+    </slot>
     <el-table-column prop="progress_name" label="状态" min-width="150" />
     <el-table-column label="操作" min-width="200">
       <template #default="scope">

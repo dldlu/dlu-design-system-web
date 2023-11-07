@@ -198,6 +198,32 @@ export const asyncRouterMap = [
     ],
   },
   {
+      name: "defense",
+      path: "/defense",
+      meta: {title: "答辩管理", role: 1},
+      component: () => import("@/views/Main/index.vue"),
+      redirect: () => {
+          return {name: "mutual"};
+      },
+      children: [
+          {
+              name: "mutual",
+              path: "mutual",
+              component: () => import("@/views/Main/Defense/Mutual/index.vue"),
+              meta: {title: "互评管理", role: 1},
+              children: [
+                  {
+                      name: "mutualSet",
+                      path: "mutualSet",
+                      component: () => import("@/views/Main/Defense/Mutual/mutualSet.vue"),
+                      meta: {title: "互评设置", role: 1}
+                  }
+              ]
+
+          }
+      ]
+  },
+    {
     path: "/404",
     name: "404",
     component: () => import("@/views/404/index.vue"),

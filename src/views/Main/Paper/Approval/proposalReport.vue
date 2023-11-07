@@ -163,24 +163,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
-import { ElMessage, FormInstance, FormRules } from "element-plus";
-import { getMajorsCollege } from "@/service/info/major.ts";
+import {computed, onMounted, reactive, ref, watch} from "vue";
+import {ElMessage, FormInstance, FormRules} from "element-plus";
+import {getMajorsCollege} from "@/service/info/major.ts";
 import TeacherSelect from "@/components/teacherSelect.vue";
-import { useStore } from "vuex";
-import {
-  getSubjectDetail,
-  getSubjectOrigins,
-  getSubjectTypes,
-  postApply,
-  putApply,
-} from "@/service/subject/apply.ts";
-import { queryUserById, queryUserByNumber } from "@/service/user/userInfo.ts";
+import {useStore} from "vuex";
+import {getSubjectDetail, getSubjectOrigins, getSubjectTypes, postApply, putApply,} from "@/service/subject/apply.ts";
+import {queryUserById, queryUserByNumber} from "@/service/user/userInfo.ts";
 
 interface Props {
   title: string;
   type: number; //1为报题 2为强修改 3为查看 4为弱修改
-  subjectId: number;
+  subjectId?: number;
 }
 const store = useStore();
 const emit = defineEmits(["getNewData"]);
